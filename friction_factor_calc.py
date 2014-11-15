@@ -9,7 +9,7 @@ def reynolds_number(U, L, nu):
 def colebrook_white_equation(f, Re, Dh, epsilon=0):
     return (
         1/np.sqrt(f)
-        + 2 * np.log10(2.51 / (Re*np.sqrt(10) + epsilon/(3.7 * Dh))))
+        + 2 * np.log10(2.51 / (Re*np.sqrt(f) + epsilon/(3.7 * Dh))))
 
 
 def friction_factor(Re, Dh):
