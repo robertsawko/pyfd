@@ -21,7 +21,7 @@ rho = 871.5222
 L = 50
 
 
-#  Results based on
+#  Numerical results based on
 #  http://www.efunda.com/formulae/fluids/calc_pipe_friction.cfm#calc
 def test_f_vs_efunda():
     assert_approx_equal(
