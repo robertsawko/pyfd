@@ -38,8 +38,16 @@ oil_density = 871.5222
 
 # Flow parameters
 oil_inlet_velocity = 0.3  # m/s
-pig_velocity = 0.0  # m/s
+pig_velocity = 0.2  # m/s
 
 orifice_velocity = (
     (oil_inlet_velocity - pig_velocity)
     * (pipe_diameter / orifice_diameter)**2)
+
+print orifice_velocity
+
+dp = pressure_drop(
+    orifice_velocity, pipe_diameter, orifice_diameter,
+    oil_density, oil_kinematic_viscosity)
+
+print dp
