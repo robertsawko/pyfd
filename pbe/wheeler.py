@@ -12,15 +12,15 @@ def wheeler_inversion(m):
     a[0] = m[1] / m[0]
 
     for k in range(1, N):
-        for l in range(k, 2*N - k - 1):
-            sigma[k+1, l] = (
-                sigma[k, l+1] - a[k-1]*sigma[k, l] - b[k-1]*sigma[k-1, l])
-            a[k] = (
-                -sigma[k, k] / sigma[k, k-1]
-                + sigma[k+1, k+1] / sigma[k+1, k])
-            b[k] = sigma[k+1, k] / sigma[k, k-1]
+        l = np.arange(2*(N - k) - 1) + k
+        sigma[k+1, l] = sigma[k, l+1] - a[k-1]*sigma[k, l] - \
+            b[k-1]*sigma[k-1, l]
 
-    # return xi, w
+        a[k] = -sigma[k, k] / sigma[k, k-1] + \
+            sigma[k+1, k+1] / sigma[k+1, k]
+
+        b[k] = sigma[k+1, k] / sigma[k, k-1]
+
     b_diag = -np.sqrt(b[1:])
     jacobi = np.diag(a) + np.diag(b_diag, k=1) + np.diag(b_diag, k=-1)
 
