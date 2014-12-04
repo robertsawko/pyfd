@@ -30,3 +30,17 @@ def wheeler_inversion(m):
 
     return eigval, w
 
+
+def is_realizable(m):
+    N = int(m.size/2)
+    M = np.zeros((N, N))
+    for i in range(0, N):
+        M[i, :] = m[i:N+i]
+    for l in range(1, N):
+        if (np.linalg.det(M[0:l, 0:l]) < 0):
+            return False
+    for l in range(2, N-1):
+        if (np.linalg.det(M[1:l, 1:l]) < 0):
+            return False
+
+    return True
