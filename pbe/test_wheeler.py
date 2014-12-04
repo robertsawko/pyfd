@@ -1,6 +1,20 @@
 import numpy as np
-from wheeler import wheeler_inversion
+from qmom import wheeler_inversion
 from numpy.testing import assert_almost_equal
+
+"""
+Unit tests for Wheeler moment inversion algorithm.
+
+Based on examples 3.1 and 3.2 from:
+
+Daniele L. Marchisio, Rodney O. Fox "Computational Models for Polydisperse
+Particulate and Multiphase Systems", Cambridge University Press 2013
+
+The book only gives the results up to for decimal digit precision. The
+analytical results were obtained using Maxima by solving the Jacobians 3.18 and
+3.24. The second case is interesting as the product difference algorithm
+wouldn't work there.
+"""
 
 
 def test_book_ex3_1():
