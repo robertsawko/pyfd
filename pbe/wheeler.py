@@ -10,7 +10,7 @@ def wheeler_inversion(m):
     a = np.zeros(N)
     b = np.zeros(N)
     a[0] = m[1] / m[0]
-    b[0] = m[0]  # As in Gautschi modified Chebyshev
+    b[0] = m[0]  # This value is insignificant as it's not being used.
 
     for k in range(1, N):
         l = np.arange(2*(N - k)) + k
@@ -30,8 +30,3 @@ def wheeler_inversion(m):
 
     return eigval, w
 
-
-xi, w = wheeler_inversion(np.array([1, 0, 1, 0, 3, 0, 15, 0]))
-
-print(xi)
-print(w)
