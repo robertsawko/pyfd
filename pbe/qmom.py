@@ -22,7 +22,7 @@ def wheeler_inversion(m):
 
         b[k] = sigma[k+1, k] / sigma[k, k-1]
 
-    b_diag = -np.sqrt(b[1:])
+    b_diag = -np.sqrt(np.abs(b[1:]))
     jacobi = np.diag(a) + np.diag(b_diag, k=1) + np.diag(b_diag, k=-1)
 
     eigval, eigvec = np.linalg.eig(jacobi)

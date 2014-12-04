@@ -9,11 +9,21 @@ There's a number of calculations I often perform prior to a CFD calculation such
 
 ### Pressure drop
 
+Simple pressure drop calculation based on Colebrook-White. Tested with efunda
+calculator.
+
 ## Turbulence
 
 ### Turbulent BC
 
-## PBE
-### Wheeler's moment inversion
+## Population balance modelling
+### Methods of moments
+#### Wheeler's moment inversion
 
-Also known as Modified Chebyshev algorithm (Gautschi 2004).
+Also known as Modified Chebyshev algorithm (Gautschi 2004). Obtains a set of
+weights and abcissas from the set of moments.
+
+#### Realizability check
+Checks whether Hadamard matrices have non-negative determinants
+
+

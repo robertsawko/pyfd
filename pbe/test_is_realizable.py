@@ -5,7 +5,7 @@ from numpy.testing import assert_equal
 """
 Unit tests for realizability
 
-Based on examples 3.3
+Based on example 3.3
 
 Daniele L. Marchisio, Rodney O. Fox "Computational Models for Polydisperse
 Particulate and Multiphase Systems", Cambridge University Press 2013
