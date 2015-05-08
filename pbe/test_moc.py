@@ -1,6 +1,6 @@
 from numpy import exp, trapz, piecewise, arange, linspace, sqrt, zeros
 from numpy.testing import assert_almost_equal, assert_array_less
-from moc import PBESolution
+from moc import MOCSolution
 
 
 def zm_pure_breakup_total_number_solution(x, t, l):
@@ -37,7 +37,7 @@ def test_pure_breakup():
     l = 1.0
 
     pbe_solutions = dict(
-        (n, PBESolution(n, time, l / n)) for n in grids
+        (n, MOCSolution(n, time, l / n)) for n in grids
     )
 
     totals = dict(
