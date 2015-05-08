@@ -31,7 +31,7 @@ def L2_relative_error(x, f, g):
     return sqrt(trapz((f - g)**2, x=x)) / sqrt(trapz(f**2, x=x))
 
 
-def test_pure_breakup():
+def test_pure_binary_breakup():
     grids = [10, 20, 40, 80, 160]
     time = arange(0.0, 10.0, 0.001)
     l = 1.0
