@@ -1,4 +1,4 @@
-from numpy import exp, trapz, piecewise, arange, linspace, sqrt
+from numpy import exp, trapz, piecewise, arange, linspace, sqrt, zeros
 from numpy.testing import assert_almost_equal, assert_array_less
 from moc import PBESolution
 
@@ -48,14 +48,24 @@ def test_pure_breakup():
     )
     v = linspace(0, l, 100)
     Na = [zm_pure_breakup_total_number_solution(v, t, l) for t in time]
-    L2_errors = [
+    L2_total_errors = [
         L2_relative_error(time, totals[g]/totals[g][0], Na/Na[0])
         for n, g in enumerate(grids)
     ]
 
+    L2_pbe_errors = zeros(len(grids))
+    for k, g in enumerate(grids):
+        L2_pbe_errors[k] = L2_relative_error(
+            pbe_solutions[g].xi,
+            pbe_solutions[g].N[-1] / (l / g),
+            zm_pure_breakup_pbe_solution(pbe_solutions[g].xi, time[-1], l)
+        )
+
     # Testing convergence
     for k in arange(1, len(grids)):
-        assert_array_less(L2_errors[k], L2_errors[k - 1])
+        assert_array_less(L2_total_errors[k], L2_total_errors[k - 1])
+        assert_array_less(L2_pbe_errors[k], L2_pbe_errors[k - 1])
 
     # Testing convergence this will equal to less than 1% error
-    assert_almost_equal(L2_errors[-1], 0.0, decimal=1)
+    assert_almost_equal(L2_total_errors[-1], 0.0, decimal=1)
+    assert_almost_equal(L2_pbe_errors[-1], 0.0, decimal=1)
