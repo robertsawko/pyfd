@@ -48,16 +48,14 @@ def test_pure_breakup():
     )
     v = linspace(0, l, 100)
     Na = [zm_pure_breakup_total_number_solution(v, t, l) for t in time]
-    L2_errors = dict(
-        (
-            n,
-            L2_relative_error(time, totals[n]/totals[n][0], Na/Na[0])
-        ) for n in pbe_solutions
-    )
-    print L2_errors
+    L2_errors = [
+        L2_relative_error(time, totals[g]/totals[g][0], Na/Na[0])
+        for n, g in enumerate(grids)
+    ]
+
     # Testing convergence
     for k in arange(1, len(grids)):
-        assert_array_less(L2_errors[grids[k]], L2_errors[grids[k - 1]])
+        assert_array_less(L2_errors[k], L2_errors[k - 1])
 
     # Testing convergence this will equal to less than 1% error
-    assert_almost_equal(L2_errors[grids[-1]], 0.0, decimal=1)
+    assert_almost_equal(L2_errors[-1], 0.0, decimal=1)
