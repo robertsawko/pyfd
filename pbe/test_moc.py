@@ -1,0 +1,63 @@
+from numpy import exp, trapz, piecewise, arange, linspace, sqrt
+from numpy.testing import assert_almost_equal, assert_array_less
+from moc import PBESolution
+
+
+def zm_pure_breakup_total_number_solution(x, t, l):
+    """
+    This is simply an integral of Ziff and McGrady
+    """
+    return exp(-t * l**2) \
+        + trapz(2.0 * t * l * exp(-t * x**2), x=x)
+
+
+def zm_pure_breakup_pbe_solution(x, t, l):
+    """
+    This is based on Equation 25 from Ziff and McGrady
+    """
+    return piecewise(
+        x,
+        [x < l, x == l, x > l],
+        [
+            lambda x: 2.0 * t * l * exp(-t * x**2),
+            lambda x: exp(-t * x**2),
+            lambda x: 0.0
+        ]
+
+    )
+
+
+def L2_relative_error(x, f, g):
+    return sqrt(trapz((f - g)**2, x=x)) / sqrt(trapz(f**2, x=x))
+
+
+def test_pure_breakup():
+    grids = [10, 20, 40, 80, 160]
+    time = arange(0.0, 10.0, 0.001)
+    l = 1.0
+
+    pbe_solutions = dict(
+        (n, PBESolution(n, time, l / n)) for n in grids
+    )
+
+    totals = dict(
+        (
+            n,
+            [sum(Ns) for Ns in pbe_solutions[n].N]
+        ) for n in pbe_solutions
+    )
+    v = linspace(0, l, 100)
+    Na = [zm_pure_breakup_total_number_solution(v, t, l) for t in time]
+    L2_errors = dict(
+        (
+            n,
+            L2_relative_error(time, totals[n]/totals[n][0], Na/Na[0])
+        ) for n in pbe_solutions
+    )
+    print L2_errors
+    # Testing convergence
+    for k in arange(1, len(grids)):
+        assert_array_less(L2_errors[grids[k]], L2_errors[grids[k - 1]])
+
+    # Testing convergence this will equal to less than 1% error
+    assert_almost_equal(L2_errors[grids[-1]], 0.0, decimal=1)
