@@ -1,9 +1,10 @@
-from numpy import exp, trapz, piecewise, arange, linspace, sqrt, zeros
+from numpy import exp, trapz, piecewise, arange, linspace, sqrt, zeros, sinh
 from numpy.testing import assert_almost_equal, assert_array_less
 from moc import MOCSolution
+from scipy.special import gamma
 
 
-def zm_pure_breakup_total_number_solution(x, t, l):
+def ziff_total_number_solution(x, t, l):
     """
     This is simply an integral of Ziff and McGrady
     """
@@ -11,7 +12,7 @@ def zm_pure_breakup_total_number_solution(x, t, l):
         + trapz(2.0 * t * l * exp(-t * x**2), x=x)
 
 
-def zm_pure_breakup_pbe_solution(x, t, l):
+def ziff_pbe_solution(x, t, l):
     """
     This is based on Equation 25 from Ziff and McGrady
     """
@@ -27,6 +28,27 @@ def zm_pure_breakup_pbe_solution(x, t, l):
     )
 
 
+def scott_total_number_solution1(t):
+    return exp(-t)
+
+
+def scott_total_number_solution3(t, C=1, N0=1):
+    T = C * N0 * t
+    return 2.0 * N0 / (T + 2.0)
+
+
+def scott_pbe_solution3(xi, t, C=1, N0=1, xi0=1):
+    T = C * N0 * t
+    x = xi / xi0
+    #phi3 = 8.0 * exp(-2.0 * x) * sinh(2 * x * (T / (T + 2))**0.5) \
+        #/ (T**0.5 * (T + 2)**1.5)
+    phi3 = sum([
+        (x * 2)**(2 * (k + 1)) / gamma(2 * (k + 1)) * (T/(T+2))**k
+        for k in range(100)
+        ]) * 4.0 * exp(- 2 * x) / (x * (T + 2)**2)
+    return N0 / xi0 * phi3
+
+
 def L2_relative_error(x, f, g):
     return sqrt(trapz((f - g)**2, x=x)) / sqrt(trapz(f**2, x=x))
 
@@ -36,9 +58,15 @@ def test_pure_binary_breakup():
     time = arange(0.0, 10.0, 0.001)
     l = 1.0
 
-    pbe_solutions = dict(
-        (n, MOCSolution(n, time, l / n)) for n in grids
-    )
+    pbe_solutions = dict()
+    for g in grids:
+        N0 = zeros(g)
+        N0[-1] = 1
+        pbe_solutions[g] = MOCSolution(
+            N0, time, l / g,
+            beta=lambda x, y: 2.0 / y,
+            gamma=lambda x: x**2
+        )
 
     totals = dict(
         (
@@ -47,7 +75,7 @@ def test_pure_binary_breakup():
         ) for n in pbe_solutions
     )
     v = linspace(0, l, 100)
-    Na = [zm_pure_breakup_total_number_solution(v, t, l) for t in time]
+    Na = [ziff_total_number_solution(v, t, l) for t in time]
     L2_total_errors = [
         L2_relative_error(time, totals[g]/totals[g][0], Na/Na[0])
         for n, g in enumerate(grids)
@@ -58,7 +86,7 @@ def test_pure_binary_breakup():
         L2_pbe_errors[k] = L2_relative_error(
             pbe_solutions[g].xi,
             pbe_solutions[g].N[-1] / (l / g),
-            zm_pure_breakup_pbe_solution(pbe_solutions[g].xi, time[-1], l)
+            ziff_pbe_solution(pbe_solutions[g].xi, time[-1], l)
         )
 
     # Testing convergence
