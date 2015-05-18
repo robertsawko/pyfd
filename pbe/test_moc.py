@@ -1,7 +1,43 @@
-from numpy import exp, trapz, piecewise, arange, linspace, sqrt, zeros, sinh
+from numpy import (
+        exp, trapz, piecewise, arange, linspace, sqrt, zeros, sinh, array)
 from numpy.testing import assert_almost_equal, assert_array_less
 from moc import MOCSolution
 from scipy.special import gamma
+
+
+def check_error_convergence(L2_errors):
+    # Testing convergence
+    for k in arange(1, len(L2_errors)):
+        assert_array_less(L2_errors[k], L2_errors[k - 1])
+
+    # Testing convergence this will equal to less than 1% error
+    assert_almost_equal(L2_errors[-1], 0.0, decimal=1)
+
+
+def compare_with_analytical(
+    time, grids, pbe_solutions, Na, pbe_analytical, vmax
+):
+    totals = dict(
+        (
+            n,
+            array([sum(Ns) for Ns in pbe_solutions[n].N])
+        ) for n in pbe_solutions
+    )
+    L2_total_errors = [
+        L2_relative_error(time, totals[g], Na)
+        for n, g in enumerate(grids)
+    ]
+
+    L2_pbe_errors = zeros(len(grids))
+    for k, g in enumerate(grids):
+        L2_pbe_errors[k] = L2_relative_error(
+            pbe_solutions[g].xi,
+            pbe_solutions[g].N[-1] / (vmax / g),
+            pbe_analytical(pbe_solutions[g].xi)
+        )
+
+    check_error_convergence(L2_total_errors)
+    check_error_convergence(L2_pbe_errors)
 
 
 def ziff_total_number_solution(x, t, l):
@@ -68,32 +104,38 @@ def test_pure_binary_breakup():
             gamma=lambda x: x**2
         )
 
-    totals = dict(
-        (
-            n,
-            [sum(Ns) for Ns in pbe_solutions[n].N]
-        ) for n in pbe_solutions
-    )
+    # Calculate analytical solution to total numbers
     v = linspace(0, l, 100)
-    Na = [ziff_total_number_solution(v, t, l) for t in time]
-    L2_total_errors = [
-        L2_relative_error(time, totals[g]/totals[g][0], Na/Na[0])
-        for n, g in enumerate(grids)
-    ]
+    Na = array([ziff_total_number_solution(v, t, l) for t in time])
 
-    L2_pbe_errors = zeros(len(grids))
-    for k, g in enumerate(grids):
-        L2_pbe_errors[k] = L2_relative_error(
-            pbe_solutions[g].xi,
-            pbe_solutions[g].N[-1] / (l / g),
-            ziff_pbe_solution(pbe_solutions[g].xi, time[-1], l)
+    compare_with_analytical(
+        time, grids, pbe_solutions, Na,
+        lambda xi: ziff_pbe_solution(xi, time[-1], l), l
+    )
+
+
+def test_pure_coalescence_constant():
+    t = arange(0.0, 1, 0.01)
+    vmax = 1e1
+    v0 = 0.5
+    N0 = 2
+    grids = [10, 20, 40, 80, 160]
+    C = 0.1
+
+    pbe_solutions = dict()
+    for g in grids:
+        dv = vmax / g
+        v = dv + dv * arange(g)
+        Ninit = (N0 / v0) * (v / v0) * exp(-v / v0) * dv
+        pbe_solutions[g] = MOCSolution(
+            Ninit, t, dv,
+            Q=lambda x, y: C
         )
 
-    # Testing convergence
-    for k in arange(1, len(grids)):
-        assert_array_less(L2_total_errors[k], L2_total_errors[k - 1])
-        assert_array_less(L2_pbe_errors[k], L2_pbe_errors[k - 1])
+    Na = scott_total_number_solution3(t, C=C, N0=N0)
 
-    # Testing convergence this will equal to less than 1% error
-    assert_almost_equal(L2_total_errors[-1], 0.0, decimal=1)
-    assert_almost_equal(L2_pbe_errors[-1], 0.0, decimal=1)
+    compare_with_analytical(
+        t, grids, pbe_solutions, Na,
+        lambda xi: scott_pbe_solution3(xi, t[-1], C=C, xi0=2 * v0, N0=N0),
+        vmax
+    )
