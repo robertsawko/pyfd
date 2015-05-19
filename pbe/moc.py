@@ -30,7 +30,7 @@ class MOCSolution:
         if self.Q is not None:
             for i in arange(self.number_of_classes):
                 # Birth coalescence term
-                for j in arange(0, i):
+                for j in arange(1, i):
                     dNdt[i] += 0.5 * N[i - j] * N[j] \
                         * self.Q(self.xi[j], self.xi[i - j])
                 # Death coalescence term
