@@ -15,7 +15,7 @@ def check_error_convergence(L2_errors):
 
 
 def compare_with_analytical(
-    time, grids, pbe_solutions, Na, pbe_analytical, vmax
+    time, grids, pbe_solutions, Na, pbe_analytical
 ):
     totals = dict(
         (
@@ -32,7 +32,7 @@ def compare_with_analytical(
     for k, g in enumerate(grids):
         L2_pbe_errors[k] = L2_relative_error(
             pbe_solutions[g].xi,
-            pbe_solutions[g].N[-1] / (vmax / g),
+            pbe_solutions[g].number_density()[-1],
             pbe_analytical(pbe_solutions[g].xi)
         )
 
@@ -110,7 +110,7 @@ def test_pure_binary_breakup():
 
     compare_with_analytical(
         time, grids, pbe_solutions, Na,
-        lambda xi: ziff_pbe_solution(xi, time[-1], l), l
+        lambda xi: ziff_pbe_solution(xi, time[-1], l)
     )
 
 
@@ -136,6 +136,5 @@ def test_pure_coalescence_constant():
 
     compare_with_analytical(
         t, grids, pbe_solutions, Na,
-        lambda xi: scott_pbe_solution3(xi, t[-1], C=C, xi0=2 * v0, N0=N0),
-        vmax
+        lambda xi: scott_pbe_solution3(xi, t[-1], C=C, xi0=2 * v0, N0=N0)
     )
