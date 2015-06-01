@@ -38,12 +38,16 @@ class MOCSolution:
                     dNdt[i] -= N[i] * N[j] * self.Q(self.xi[i], self.xi[j])
         return dNdt
 
+    def number_density(self):
+        return self.N / self.xi0
+
     def __init__(self, N0, t, xi0, beta=None, gamma=None, Q=None):
         self.number_of_classes = N0.shape[0]
         # Kernels setup
         self.beta = beta  # Daughter particle distribution
         self.gamma = gamma  # Breakup frequency
         self.Q = Q  #
+        self.xi0 = xi0
         # Uniform grid
         self.xi = xi0 + xi0 * arange(self.number_of_classes)
         self.delta_xi = xi0
