@@ -1,5 +1,6 @@
 from numpy import arange, zeros
 from scipy.integrate import odeint
+import pdb
 
 """
 Method of classes
@@ -14,28 +15,33 @@ class MOCSolution:
     def RHS(
         self, N, t
     ):
+        #pdb.set_trace()
         dNdt = zeros(self.number_of_classes)
 
         if self.gamma is not None and self.beta is not None:
-            # Death breakup term
-            dNdt -= N * self.gamma(self.xi)
-            # Birth breakup term
             for i in arange(self.number_of_classes):
-                for j in arange(i + 1, self.number_of_classes):
-                    dNdt[i] += \
-                        self.beta(self.xi[i], self.xi[j]) \
-                        * self.gamma(self.xi[j]) \
-                        * N[j] * self.delta_xi
+                # Death breakup term
+                if i != 0:
+                    dNdt[i] -= N[i] * self.gamma(self.xi[i])
+                # Birth breakup term
+                if i != (self.number_of_classes - 1):
+                    for j in arange(i + 1, self.number_of_classes):
+                        dNdt[i] += \
+                            self.beta(self.xi[i], self.xi[j]) \
+                            * self.gamma(self.xi[j]) \
+                            * N[j] * self.delta_xi
 
         if self.Q is not None:
             for i in arange(self.number_of_classes):
                 # Birth coalescence term
-                for j in arange(1, i):
-                    dNdt[i] += 0.5 * N[i - j] * N[j] \
-                        * self.Q(self.xi[j], self.xi[i - j])
+                if i != 0:
+                    for j in arange(i):
+                        dNdt[i] += 0.5 * N[i - j - 1] * N[j] \
+                            * self.Q(self.xi[j], self.xi[i - j - 1])
                 # Death coalescence term
-                for j in arange(self.number_of_classes):
-                    dNdt[i] -= N[i] * N[j] * self.Q(self.xi[i], self.xi[j])
+                if i != (self.number_of_classes - 1):
+                    for j in arange(self.number_of_classes):
+                        dNdt[i] -= N[i] * N[j] * self.Q(self.xi[i], self.xi[j])
         return dNdt
 
     def number_density(self):
