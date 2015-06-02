@@ -64,6 +64,12 @@ def ziff_pbe_solution(x, t, l):
     )
 
 
+def blatz_and_tobolsky_pbe_solution(xi, t, kc, kb):
+    K = 1.0 + kb / kc
+    pinf = 1.0 / (K + sqrt(K**2 - 1))
+    return pinf**(xi - 1.0) * (1.0 - pinf)**2
+
+
 def scott_total_number_solution1(t):
     return exp(-t)
 
