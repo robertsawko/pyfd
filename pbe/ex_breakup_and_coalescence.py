@@ -27,7 +27,7 @@ N0 = 10000
 grids = [20, 40, 80]
 kc = 1.0
 kb = 0.25
-vmax = N0
+vmax = 100
 
 pbe_solutions = dict()
 
@@ -50,14 +50,14 @@ ax = fig.gca()
 markers = cycle(['o', 's', 'v', '*', '.', ','])
 v = linspace(0.9, vmax, 10000)
 
-ax.set_ylim([1e-10, 10e4])
+ax.set_ylim([1e-10, 10e3])
 for n in sorted(pbe_solutions):
     ax.loglog(
         pbe_solutions[n].xi, pbe_solutions[n].N[-1], "+",
         marker=next(markers),
         label="MOC with N={0}".format(n))
 ax.loglog(
-    v, N0 * blatz_and_tobolsky_pbe_solution(v, time[0], kc, kb), "-k",
+    v, N0 * blatz_and_tobolsky_pbe_solution(v, time[-1], kc, kb), "-k",
     linewidth=2, label="Analytical $t=\infty$")
 ax.legend(loc='upper right', shadow=True)
 ax.set_xlabel('Volume')
