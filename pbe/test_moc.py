@@ -14,8 +14,8 @@ def check_error_convergence(L2_errors):
     assert_almost_equal(L2_errors[-1], 0.0, decimal=1)
 
 
-def compare_with_analytical(
-    time, grids, pbe_solutions, Na, pbe_analytical
+def compare_with_analytical_total_number(
+    time, grids, pbe_solutions, Na
 ):
     totals = dict(
         (
@@ -27,7 +27,12 @@ def compare_with_analytical(
         L2_relative_error(time, totals[g], Na)
         for n, g in enumerate(grids)
     ]
+    check_error_convergence(L2_total_errors)
 
+
+def compare_with_analytical_pbe(
+    time, grids, pbe_solutions, pbe_analytical
+):
     L2_pbe_errors = zeros(len(grids))
     for k, g in enumerate(grids):
         L2_pbe_errors[k] = L2_relative_error(
@@ -35,8 +40,6 @@ def compare_with_analytical(
             pbe_solutions[g].number_density()[-1],
             pbe_analytical(pbe_solutions[g].xi)
         )
-
-    check_error_convergence(L2_total_errors)
     check_error_convergence(L2_pbe_errors)
 
 
@@ -96,6 +99,9 @@ def L2_relative_error(x, f, g):
 
 
 def test_pure_binary_breakup():
+    """
+    Pure breakup test
+    """
     grids = [10, 20, 40, 80, 160]
     time = arange(0.0, 10.0, 0.001)
     l = 1.0
@@ -114,13 +120,19 @@ def test_pure_binary_breakup():
     v = linspace(0, l, 100)
     Na = array([ziff_total_number_solution(v, t, l) for t in time])
 
-    compare_with_analytical(
-        time, grids, pbe_solutions, Na,
+    compare_with_analytical_total_number(
+        time, grids, pbe_solutions, Na
+    )
+    compare_with_analytical_pbe(
+        time, grids, pbe_solutions,
         lambda xi: ziff_pbe_solution(xi, time[-1], l)
     )
 
 
 def test_pure_coalescence_constant():
+    """
+    Pure coalescence test
+    """
     t = arange(0.0, 1, 0.01)
     vmax = 1e1
     v0 = 0.5
@@ -140,7 +152,39 @@ def test_pure_coalescence_constant():
 
     Na = scott_total_number_solution3(t, C=C, N0=N0)
 
-    compare_with_analytical(
-        t, grids, pbe_solutions, Na,
+    compare_with_analytical_total_number(
+        t, grids, pbe_solutions, Na)
+    compare_with_analytical_pbe(
+        t, grids, pbe_solutions,
         lambda xi: scott_pbe_solution3(xi, t[-1], C=C, xi0=2 * v0, N0=N0)
     )
+
+
+def test_simultaneous_breakup_and_coalescence():
+    """
+    Breakup + coalescence test
+    """
+    time = arange(0.0, 10, 0.005)
+    N0 = 10000
+    # Grid convergence is not applicable in this scenario
+    grid = 80
+    kc = 1.0
+    kb = 0.25
+
+    Ninit = zeros(grid)
+    Ninit[0] = N0
+    pbe_solution = MOCSolution(
+        Ninit, time, 1.0,
+        # Dividing coalescence coefficient by the number of monomers to make
+        # formulations equivalent
+        Q=lambda x, y: kc / N0,
+        # Guard has to be imlemented in order to avoid division by zero
+        beta=lambda x, y: 2.0 / max([y - 1.0, 1e-6]),
+        gamma=lambda x: kb * (x - 1.0)
+    )
+    error = L2_relative_error(
+        pbe_solution.xi,
+        pbe_solution.number_density()[-1],
+        N0 * blatz_and_tobolsky_pbe_solution(pbe_solution.xi, time[-1], kc, kb)
+    )
+    assert_almost_equal(error, 0.0, decimal=1)

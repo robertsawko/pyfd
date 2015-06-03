@@ -74,5 +74,5 @@ ax.loglog(
     linewidth=2, label="Analytical $t=\infty$")
 ax.legend(loc='upper right', shadow=True)
 ax.set_xlabel('Volume')
-ax.set_ylabel('N/N0')
+ax.set_ylabel('$N$ - total number')
 plt.show()
