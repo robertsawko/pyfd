@@ -1,38 +1,39 @@
-from numpy import arange, linspace, zeros, array
+from numpy import arange, linspace, array, exp
 from itertools import cycle
 from moc import MOCSolution
-from test_moc import ziff_total_number_solution, ziff_pbe_solution
+from test_moc import scott_total_number_solution3, scott_pbe_solution3
 import matplotlib.pyplot as plt
-import pdb
 
 """
 Case setup based on:
 
-    Ziff, R.M and McGrady, E.D
-    "New solutions to the fragmentation equation", J. Phys A, vol. 18, 1985
+    Scott, W.T.
+    "Analytical studies in cloud droplet coalescence", I. J. Atmos. Sci.
+    vol. 25, 1968
 
-    We are looking at case 4. from their paper with kernel F(x, y) = x + y.
-    This corresponds to choosing:
-        beta = 2.0/y,
-        Gamma = y^2,
-    for our kernels.
+    We are looking at constant coalescence kernels (case III in the paper).
+
+    NOTE: We use a simplified version of the "Gaussian-like" distribution of
+    initial IC.
 """
 
 grids = [10, 20, 40, 80, 160]
-time = arange(0.0, 10.0, 0.001)
-vmax = 1.0
+time = arange(0.0, 1, 0.001)
+vmax = 1e1
+C = 0.1
+N0 = 2
+v0 = 0.5
 
 pbe_solutions = dict()
 for g in grids:
-    N0 = zeros(g)
-    N0[-1] = 1
+    dv = vmax / g
+    v = dv + dv * arange(g)
+    Ninit = (N0 / v0) * (v / v0) * exp(-v / v0) * dv
     pbe_solutions[g] = MOCSolution(
-        N0, time, vmax / g,
-        beta=lambda x, y: 2.0 / y,
-        gamma=lambda x: x**2
+        Ninit, time, dv,
+        Q=lambda x, y: C
     )
 
-pdb.set_trace()
 totals = dict(
     (
         n,
@@ -41,17 +42,17 @@ totals = dict(
 )
 
 v = linspace(0, vmax, 100)
-Na = array([ziff_total_number_solution(v, t, vmax) for t in time])
+Na = scott_total_number_solution3(time, C=C, N0=N0)
 
 fig = plt.figure()
 ax = fig.gca()
 linestyles = cycle(['-', '--', ':'])
 for n in sorted(totals):
-    ax.loglog(
-        time, totals[n]/totals[n][0],
+    ax.plot(
+        time, totals[n],
         linestyle=next(linestyles),
         label="MOC with N={0}".format(n))
-ax.loglog(time, Na, "-k", linewidth=2, label="Analytical")
+ax.plot(time, Na, "-k", linewidth=2, label="Analytical")
 ax.legend(loc='lower right', shadow=True)
 ax.set_xlabel('t')
 ax.set_ylabel('N/N0')
@@ -69,7 +70,7 @@ for n in sorted(pbe_solutions):
         marker=next(markers),
         label="MOC with N={0}".format(n))
 ax.loglog(
-    v, ziff_pbe_solution(v, time[-1], vmax), "-k",
+    v, scott_pbe_solution3(v, time[-1], C=C, xi0=2.0 * v0, N0=N0), "-k",
     linewidth=2, label="Analytical $t=\infty$")
 ax.legend(loc='upper right', shadow=True)
 ax.set_xlabel('Volume')
