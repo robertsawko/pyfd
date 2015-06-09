@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from fluid import fluid
 import os.path
 import numpy as np
-from scipy.optimize import minimize, fmin, fmin_powell, differential_evolution
+from scipy.optimize import minimize, fmin, fmin_powell
 from sys import argv
 
 
@@ -42,6 +42,7 @@ def case_error(C):
 	  beta=F.beta,
 	  pdf='number'
       )
+      pbe_solutions[0].solve()
 
       N = pbe_solutions[0].solution
       m1 = sum(N[:] * v[:])

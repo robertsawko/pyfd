@@ -24,10 +24,11 @@ Case setup based on:
 """
 
 t = arange(0.0, 10, 0.005)
+t_ss = arange(0.0, 5.0, 1.0)
 # Initial number of monomers
 N0 = 10000
 grids = [20, 40, 80]
-#grids = [40]
+#grids = [20]
 kc = 1.0
 kb = 0.25
 vmax = 100
@@ -61,6 +62,14 @@ for g in grids:
         beta=lambda x, y: 2.0 / max([y - 1.0, 1e-6]),
         gamma=lambda x: kb * (x - 1.0)
     )
+    # set time used to advance the solution before checking the current error
+    Ss[g].setTime(t_ss)
+    # set minimum and maximum number of iterations
+    Ss[g].setIter(1, 200)
+    # how much the error must decrease
+    Ss[g].setError(1e-08)
+    Ss[g].setMassTol(0.7, 1.3)
+    Ss[g].solve()
 print "Time elepsed for steady state PBE solution: ", time() - start
 
 fig = plt.figure()

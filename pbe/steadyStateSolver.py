@@ -50,37 +50,45 @@ class SteadyStateSolution:
         self.rhs = dNdt
         return dNdt
 
+    def setIter(self, iMin, iMax):
+        self.iMin = iMin
+        self.iMax = iMax
 
-    def solve(self, N):
-      rhs = self.RHS(N, 0.0)
-      er0 = sum(rhs * rhs)
-      N0 = N
+    def setMassTol(self, mMin, mMax):
+        self.mMin = mMin
+        self.mMax = mMax
 
-      i = 0
-      iMax = 10
-      iMin = 1
-      er = er0
-      #for i in arange(rhs.shape[0]):
-	#print rhs[i], N0[i]
-      m1Init = sum(self.xi * N0)
-      #print m1Init
+    def setTime(self, t):
+        self.time = t
 
-      #t = np.arange(0, 5.0, 1.0)
-      t = np.arange(0, 5.0e-01, 1.0e-01)
-      while er > er0 * 1e-03 and i < iMax or i < iMin:
-	i += 1
-	Ni = odeint(lambda NN, t: self.RHS(NN, t), N0, t)
-	N0 = Ni[-1]
-	m1 = sum(self.xi * N0)
-	x = m1 / m1Init
-	if x > 1.4 or x < 0.6:
-	  return N0
-	rhs = self.rhs
-	er = sum(rhs * rhs)
-	#print er
-      print "Converged in ", i , " iterations"
-      return N0
+    def setError(self, er):
+        self.er = er
 
+    def solve(self):
+        N0 = self.N0
+        rhs = self.RHS(N0, 0.0)
+        er0 = sum(rhs * rhs)
+
+        i = 0
+        iMax = self.iMax
+        iMin = self.iMin
+        er = er0
+        m1Init = sum(self.xi * N0)
+
+        t = self.time
+        while er > er0 * self.er and i < iMax or i < iMin:
+            i += 1
+            Ni = odeint(lambda NN, t: self.RHS(NN, t), N0, t)
+            N0 = Ni[-1]
+            m1 = sum(self.xi * N0)
+            x = m1 / m1Init
+            if x > self.mMax or x < self.mMin:
+                break
+            rhs = self.rhs
+            er = sum(rhs * rhs)
+        print "Converged in ", i, " iterations"
+        #return N0
+        self.solution = N0
 
     def __init__(self, N0, t, xi0, beta=None, gamma=None, Q=None, theta=None,
                  pdf="number"):
@@ -95,14 +103,13 @@ class SteadyStateSolution:
         self.N0 = N0
         # choose pdf formulation: number or number density
         self.pdf = pdf
+        # set minimum and maximum number of iteration:
+        self.setIter(10, 100)
+        self.setMassTol(0.6, 1.4)
+        self.setTime(np.arange(0, 0.5, 0.1))
+        self.setError(1e-03)
         # Uniform grid
         self.xi = xi0 + xi0 * arange(self.number_of_classes)
         self.delta_xi = xi0
-	self.solution = self.solve(N0)
-	self.dt = 0.1
-        # Solve procedure
-        #self.N = odeint(lambda NN, t: self.RHS(NN, t), N0, t)
-	#tol = sum(N0) / N0.shape[0] * 0.1
-	#print tol
-	#self.solution = broyden1(self.RHS, N0, verbose=True, f_tol=tol)
-	#print.solution = fsolve(self.RHS, N0, maxfev=2, full_output=True)
+        self.N0 = N0
+        #self.solution = self.solve(N0)
