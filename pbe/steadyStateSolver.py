@@ -58,14 +58,15 @@ class SteadyStateSolution:
 
       i = 0
       iMax = 10
-      iMin = 10
+      iMin = 1
       er = er0
       #for i in arange(rhs.shape[0]):
 	#print rhs[i], N0[i]
       m1Init = sum(self.xi * N0)
       #print m1Init
 
-      t = np.arange(0, 5.0, 1.0)
+      #t = np.arange(0, 5.0, 1.0)
+      t = np.arange(0, 5.0e-01, 1.0e-01)
       while er > er0 * 1e-03 and i < iMax or i < iMin:
 	i += 1
 	Ni = odeint(lambda NN, t: self.RHS(NN, t), N0, t)
