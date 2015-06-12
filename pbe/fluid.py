@@ -82,6 +82,38 @@ class fluid:
             self.St = 2.0 / 9.0 * (self.expectedD / self.D) ** 2 \
                 * self.Re * self.R
             self.Ca = self.muc * self.U / self.sigma
+        elif name == "angeli":
+            self.rhoc = 801.0
+            self.muc = 1.6e-03
+            self.rhod = 1000.0
+            self.mud = 1.0e-03
+            self.sigma = 1.7e-02
+            self.Us = [1.1, 1.25, 1.3, 1.5, 1.7]
+            self.U = self.Us[caseNr]
+            # volume fraction
+            self.alphas = [9.1, 5.0, 7.7, 3.4, 5.0]
+            self.alpha = self.alphas[caseNr] * 1e-02
+            # pipe diameter, length and volume
+            self.D = 24.0e-03
+            self.L = 4.5
+            self.V = pi * (self.D / 2.0) ** 2 * self.L
+            self.epsilons = [0.0075, 0.01, 0.0116, 0.01686, 0.0234] 
+            self.epsilon = self.epsilons[caseNr] 
+            self.theta = None
+            self.Res = [34693.0, 39424.0, 41000.0, 47300.0, 53600.0]
+            self.Re = self.Res[caseNr]
+            self.timeRange = arange(0.0, 300.0, 1e-01)
+            self.expectedDs = [1.29, 0.97, 1.25, 0.73, 0.69]
+            self.expectedD = self.expectedDs[caseNr] * 1e-03
+            self.d0 = np.array([0.8 * self.expectedD, 1.2 * self.expectedD])
+            self.v0 = pi / 6.0 * self.d0 ** 3
+            self.s0 = self.v0 / 4.0
+            self.vMax = self.v0 * 4.0
+            self.numberOfClasses = 50
+            self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
+            self.St = 2.0 / 9.0 * (self.expectedD / self.D) ** 2 \
+                * self.Re * self.R
+            self.Ca = self.muc * self.U / self.sigma
         elif name == "coulaloglou":
             self.rhoc = 1000.0
             self.muc = 1.0e-03
@@ -120,7 +152,7 @@ class fluid:
             self.Ca = self.mud * self.Nstar * self.Dstar / self.sigma \
                 * sqrt(self.rhoc / self.rhoc)
         else:
-            sys.exit("Valid cases are: 'galinat', 'simmonsAzzopardi', 'coulaloglou'")
+            sys.exit("Valid cases are: 'galinat', 'simmonsAzzopardi', 'coulaloglou', 'angeli'")
 
         # default values from Coulaloglou and Tavlarides
         self.C1 = 0.04
