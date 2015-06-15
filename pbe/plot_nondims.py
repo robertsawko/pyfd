@@ -32,10 +32,8 @@ def simmons():
     St = C[5][4]
     Ca = C[6][4]
     c = []
-    c.append(C[0][4])
-    c.append(C[1][4])
-    c.append(C[2][4])
-    c.append(C[3][4])
+    for i in range(4):
+        c.append(C[i][4])
 
     return Re, St, Ca, c
 
@@ -46,10 +44,8 @@ def coulaloglou():
     St = C[5][5:19]
     Ca = C[6][5:19]
     c = []
-    c.append(C[0][5:19])
-    c.append(C[1][5:19])
-    c.append(C[2][5:19])
-    c.append(C[3][5:19])
+    for i in range(4):
+        c.append(C[i][5:19])
 
     return Re, St, Ca, c
 
@@ -60,10 +56,8 @@ def angeli():
     St = C[5][19:]
     Ca = C[6][19:]
     c = []
-    c.append(C[0][19:])
-    c.append(C[1][19:])
-    c.append(C[2][19:])
-    c.append(C[3][19:])
+    for i in range(4):
+        c.append(C[i][19:])
 
     return Re, St, Ca, c
 
