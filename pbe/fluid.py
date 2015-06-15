@@ -155,17 +155,14 @@ class fluid:
             sys.exit("Valid cases are: 'galinat', 'simmonsAzzopardi', 'coulaloglou', 'angeli'")
 
         # default values from Coulaloglou and Tavlarides
-        self.C1 = 0.04
-        self.C2 = 0.08
-        self.C3 = 2.17e-16
-        self.C4 = 2.28e13
+        self.C = np.array([0.04, 0.08, 2.17e-16, 2.28e13])
 
     def gamma(self, xi):
-        C = self.C1 * xi ** (-2.0 / 9.0) * self.epsilon ** (1.0 / 3.0)\
+        C = self.C[0] * xi ** (-2.0 / 9.0) * self.epsilon ** (1.0 / 3.0)\
             / (1.0 + self.alpha)
             #* self.Re / (1.0 + self.alpha)
 
-        exp_argument = - self.C2 * self.sigma * (1.0 + self.alpha) ** 2 \
+        exp_argument = - self.C[1] * self.sigma * (1.0 + self.alpha) ** 2 \
             / (self.rhod * xi ** (5.0 / 9.0) * self.epsilon ** (2.0 / 3.0))
             #/ self.Re
         return C * exp(exp_argument)
@@ -180,10 +177,10 @@ class fluid:
             / (xi1 ** (1.0 / 3.0) + xi2 ** (1.0 / 3.0))
         dRatio = dRatio ** 4
 
-        exp_argument = - self.C4 * self.muc * self.rhoc * self.epsilon\
+        exp_argument = - self.C[3] * self.muc * self.rhoc * self.epsilon\
             / (1.0 + self.alpha) ** 3 * dRatio / self.sigma ** 2
 
-        C = self.C3 * (xi1 ** (1.0 / 3.0) + xi2 ** (1.0 / 3.0)) ** 2\
+        C = self.C[2] * (xi1 ** (1.0 / 3.0) + xi2 ** (1.0 / 3.0)) ** 2\
             * (xi1 ** (2.0 / 9.0) + xi2 ** (2.0 / 9.0)) ** 0.5\
             * self.epsilon ** (1.0 / 3.0) / (1.0 + self.alpha) / self.V
         return exp(exp_argument) * C

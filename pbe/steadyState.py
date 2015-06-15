@@ -13,12 +13,9 @@ def case_error(C):
     pbe_solutions = dict()
     F = fluid(argv[1], (int)(argv[2]), (int)(argv[3]))
 
-    F.C1 = C[0]
-    F.C2 = C[1]
-    F.C3 = C[2]
-    F.C4 = C[3]
+    F.C = C
     print '--------------'
-    print 'constants: ', F.C1, F.C2, F.C3, F.C4
+    print 'constants: ', F.C[0], F.C[1], F.C[2], F.C[3]
 
     Er = 0.0
     for i in np.arange(2):
