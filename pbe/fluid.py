@@ -150,7 +150,7 @@ class fluid:
             self.St = 2.0 / 9.0 * (self.expectedD / self.Dstar) ** 2 \
                 * self.Re * self.R
             self.Ca = self.mud * self.Nstar * self.Dstar / self.sigma \
-                * sqrt(self.rhoc / self.rhoc)
+                * sqrt(self.rhoc / self.rhod)
         else:
             sys.exit("Valid cases are: 'galinat', 'simmonsAzzopardi', 'coulaloglou', 'angeli'")
 
