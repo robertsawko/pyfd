@@ -8,15 +8,10 @@ f_br = open(path + 'breakup', 'w')
 f_c = open(path + 'coalescence', 'w')
 
 F = fluid.fluid('coulaloglou', 0, 0)
-F.C1 = 1.52e-02
-F.C2 = 6.78e-02
-F.C3 = 1.06e-12
-F.C4 = 5.13e13
+F.C = np.array([1.52e-02, 6.78e-02, 1.06e-12, 5.13e13])
 
-f.write('C1 ' + repr(F.C1) + '\n')
-f.write('C2 ' + repr(F.C2) + '\n')
-f.write('C3 ' + repr(F.C3) + '\n')
-f.write('C4 ' + repr(F.C4) + '\n')
+for i in range(4):
+    f.write('C{0} '.format(i + 1) + repr(F.C[i]) + '\n')
 f.write('rhoc ' + repr(F.rhoc) + '\n')
 f.write('rhod ' + repr(F.rhod) + '\n')
 f.write('muc ' + repr(F.muc) + '\n')

@@ -5,4 +5,7 @@ pbe/validationData/orifice/results/histograms/*
 pbe/validationData/orifice/results/*.pdf
 pbe/validationData/sweep/**
 pbe/validationData/tables/**
+pbe/validationData/plots/**
+pbe/validationData/*.ods
+pbe/*.pdf
 

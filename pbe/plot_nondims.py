@@ -20,100 +20,77 @@ def galinat():
     # Ca is 4 times as big
     Ca = C[6][1:4] * 4.0
     c = []
-    c.append(C[0][1:4])
-    c.append(C[1][1:4])
-    c.append(C[2][1:4])
-    c.append(C[3][1:4])
+    for i in range(4):
+        c.append(C[i][1:4])
 
     return Re, St, Ca, c
 
 
 def simmons():
     C = np.genfromtxt('validationData/coeffs_nondims.txt').T
-    # Reynolds number in the orifice is twice as big as Re_pipe
     Re = C[4][4]
-    # St is 8 times as big
     St = C[5][4]
-    # Ca is 4 times as big
     Ca = C[6][4]
     c = []
-    c.append(C[0][4])
-    c.append(C[1][4])
-    c.append(C[2][4])
-    c.append(C[3][4])
+    for i in range(4):
+        c.append(C[i][4])
 
     return Re, St, Ca, c
 
 
 def coulaloglou():
     C = np.genfromtxt('validationData/coeffs_nondims.txt').T
-    # Reynolds number in the orifice is twice as big as Re_pipe
     Re = C[4][5:19]
-    # St is 8 times as big
     St = C[5][5:19]
-    # Ca is 4 times as big
     Ca = C[6][5:19]
     c = []
-    c.append(C[0][5:19])
-    c.append(C[1][5:19])
-    c.append(C[2][5:19])
-    c.append(C[3][5:19])
+    for i in range(4):
+        c.append(C[i][5:19])
 
     return Re, St, Ca, c
 
 
 def angeli():
     C = np.genfromtxt('validationData/coeffs_nondims.txt').T
-    # Reynolds number in the orifice is twice as big as Re_pipe
     Re = C[4][19:]
-    # St is 8 times as big
     St = C[5][19:]
-    # Ca is 4 times as big
     Ca = C[6][19:]
     c = []
-    c.append(C[0][19:])
-    c.append(C[1][19:])
-    c.append(C[2][19:])
-    c.append(C[3][19:])
+    for i in range(4):
+        c.append(C[i][19:])
 
     return Re, St, Ca, c
 
-Re_sa, St_sa, Ca_sa, C_sa = simmons()
-Re_g, St_g, Ca_g, C_g = galinat()
-Re_c, St_c, Ca_c, C_c = coulaloglou()
-Re_a, St_a, Ca_a, C_a = angeli()
+nondims = dict()
+nondims['simmons'] = (simmons())
+nondims['galinat'] = (galinat())
+nondims['coulaloglou'] = (coulaloglou())
+nondims['angeli'] = (angeli())
 
 fig = plt.figure()
 ax = fig.gca()
 markers = cycle(['o', 's', 'v', '*', '.', ','])
 
-x_g = Re_g ** aRe * St_g ** aSt * Ca_g ** aCa
-x_c = Re_c ** aRe * St_c ** aSt * Ca_c ** aCa
-x_sa = Re_sa ** aRe * St_sa ** aSt * Ca_sa ** aCa
-x_a = Re_a ** aRe * St_a ** aSt * Ca_a ** aCa
+xMin = 1e200
+xMax = -1
+for name in nondims:
+    data = nondims[name]
+    Re = data[0]
+    St = data[1]
+    Ca = data[2]
+    C = data[3]
+    x = Re ** aRe * St ** aSt * Ca ** aCa
 
-if not skipGalinat:
+    if skipGalinat and name == 'galinat':
+        continue
     ax.plot(
-        x_g, C_g[I], '+', marker=next(markers),
-        linewidth=2, label="Galinat")
+        x, C[I], '+', marker=next(markers),
+        linewidth=2, label=name)
 
-ax.plot(
-    x_c, C_c[I], '+', marker=next(markers),
-    linewidth=2, label="Coulaloglou")
-
-ax.plot(
-    x_sa, C_sa[I], '+', marker=next(markers),
-    linewidth=2, label="Simmons")
-
-ax.plot(
-    x_a, C_a[I], '+', marker=next(markers),
-    linewidth=2, label="Angeli")
-
-xMin = min(np.amin(x_c), np.amin(x_a))
-xMax = max(np.amax(x_c), np.amax(x_a))
-if not skipGalinat:
-    xMax = max(xMax, np.amax(x_g))
+    xMin = min(xMin, np.amin(x))
+    xMax = max(xMax, np.amax(x))
 x = np.linspace(xMin, xMax)
+
 # for C4 x = Re / St
 #y = 3.0e08 * x
 #for C3; x = St * Ca / Re ** 2
