@@ -7,4 +7,5 @@ pbe/validationData/sweep/**
 pbe/validationData/tables/**
 pbe/validationData/plots/**
 pbe/validationData/*.ods
+pbe/*.pdf
 
