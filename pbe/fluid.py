@@ -55,6 +55,7 @@ class fluid:
                 * self.Re * self.R
             self.Ca = self.muc * self.U[caseNr] / self.sigma
         elif name == "simmonsAzzopardi":
+	    self.caseNs = np.array([1])
             self.rhoc = 797.0
             self.muc = 1.8e-03
             self.rhod = 1166.0
@@ -83,6 +84,7 @@ class fluid:
                 * self.Re * self.R
             self.Ca = self.muc * self.U / self.sigma
         elif name == "angeli":
+	    self.caseNs = np.array([5])
             self.rhoc = 801.0
             self.muc = 1.6e-03
             self.rhod = 1000.0
@@ -115,6 +117,7 @@ class fluid:
                 * self.Re * self.R
             self.Ca = self.muc * self.U / self.sigma
         elif name == "karabelas":
+	    self.caseNs = np.array([4, 3])
 	    self.runnumber = []
 	    self.runnumber.append(['3S', '5S', '6S', '7S'])
 	    self.runnumber.append(['11S', '17S', '10S'])
@@ -160,6 +163,7 @@ class fluid:
                 * self.Re * self.R
             self.Ca = self.muc * self.U / self.sigma
         elif name == "coulaloglou":
+	    self.caseNs = np.array([5, 5, 4])
             self.rhoc = 1000.0
             self.muc = 1.0e-03
             self.rhod = 972.0
