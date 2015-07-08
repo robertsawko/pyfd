@@ -3,11 +3,9 @@ import numpy as np
 from scipy.optimize import minimize, fmin, basinhopping, brute
 import matplotlib.pyplot as plt
 from itertools import cycle
+import pylab
 
-aRe = 1
-aSt = 2
-aCa = 0
-I = 2
+I = 3
 skipGalinat = True
 
 
@@ -75,11 +73,19 @@ def karabelas():
 
 
 nondims = dict()
+names = dict()
+
 nondims['simmons'] = (simmons())
-nondims['galinat'] = (galinat())
+names['simmons'] = ('Simmons and Azzopardi (2001)')
+if not skipGalinat:
+  nondims['galinat'] = (galinat())
+  names.append('Galinat et al. (2005)')
 nondims['coulaloglou'] = (coulaloglou())
+names['coulaloglou'] = ('Coulaloglou and Tavlarides (1977)')
 nondims['angeli'] = (angeli())
+names['angeli'] = ('Angeli and Hewitt (2000)')
 nondims['karabelas'] = (karabelas())
+names['karabelas'] = ('Karabelas (1978)')
 
 fig = plt.figure()
 ax = fig.gca()
@@ -93,36 +99,55 @@ for name in nondims:
     St = data[1]
     Ca = data[2]
     C = data[3]
-    x = Re ** aRe * St ** aSt * Ca ** aCa
-    #x = Re / St ** 2
+    #x = Re ** aRe * St ** aSt * Ca ** aCa
+    if I == 2:
+      x = 0.062 * np.log(Re) * St ** 0.65776 * Ca ** 0.54667
+    elif I == 3:
+      x = Re ** 1.6296 / St ** 0.5044 / Ca ** 0.2987
+    else:
+      x = Re
 
-    if skipGalinat and name == 'galinat':
-        continue
     ax.plot(
         x, C[I], '+', marker=next(markers),
-        linewidth=2, label=name)
+        linewidth=2, label=names[name])
 
     xMin = min(xMin, np.amin(x))
     xMax = max(xMax, np.amax(x))
 x = np.linspace(xMin, xMax)
 
-# for C4 x = Re / St
-#y = 3.0e08 * x
-#for C3; x = St * Ca / Re ** 2
-#y = 1.0e-07 * x ** 0.5
-# for C2; x = St
-y = np.exp(x / 14.0) / 40.0
-#for C1; x = St
-#y = np.exp(x / 14.0) / 400.0
-#ax.plot(
-    #x, y,
-    #linewidth=2, label="correlation")
 
-ax.legend(loc='best', shadow=True)
+if I == 2:
+  y = 1.7367e-14 + 1.6268e-12 * x
+elif I == 1:
+  y = 0.0355 + x * 0.0
+elif I == 0:
+  y = 0.00395 + x * 0.0
+elif I == 3:
+  y = 284255 * x
+
+
 ax.grid()
-ax.set_xscale('log')
-#ax.set_yscale('log')
-ax.set_xlabel('St * Ca / Re^2')
+if I > 1:
+  ax.set_xscale('log')
+  ax.set_yscale('log')
+
+if I == 1 or I == 0:
+  ax.set_xlabel(r'$Re$')
+elif I == 2:
+  ax.set_xlabel(r'$Re^{1.6296}St^{-0.5044} Ca^{-0.2987}$')
+elif I == 3:
+  ax.set_xlabel(r'$0.062 \log(Re) St^{0.65776} Ca^{0.54667}$')
+
+
 ax.set_ylabel('C' + repr(I + 1))
+ax.plot(
+    x, y, color='black',
+    linewidth=2)
 plt.savefig('validationData/plots/C' + repr(I + 1) + '.pdf')
+
+figLegend = pylab.figure(figsize = (4.5,1.5))
+pylab.figlegend(*ax.get_legend_handles_labels(), loc = 'upper left')
+plt.savefig('validationData/plots/legend.pdf')
+
 plt.show()
+
