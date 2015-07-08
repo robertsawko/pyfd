@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from itertools import cycle
 from scipy.optimize import curve_fit
 
-I = 0
+I = 3
 skipGalinat = True
 skipSimmons = False
 
@@ -14,14 +14,14 @@ def xAxis(x, aRe, aSt, aCa, C1, C2):
   Re = x[0]
   St = x[1]
   Ca = x[2]
-  # works for I=3
-  #return Re ** aRe / St ** aSt / Ca ** aCa
+  # works for I=3 and I=0
+  return Re ** aRe / St ** aSt / Ca ** aCa
 
-  # works for I=2
-  #return aRe * np.log(Re) * St ** aSt * Ca ** aCa
+  # works for I=2 
+  #return St ** aSt / Re ** aRe * Ca ** aCa
 
-  # works for I=1
-  return Re * 0.0
+  # works for I=0
+  #return Re ** aRe
 
 def dependency(x, A, B, aRe, aSt, aCa, C1, C2):
   x = xAxis(x, aRe, aSt, aCa, C1, C2)
@@ -61,6 +61,7 @@ Re, St, Ca, C = getData()
 #C[3] /= 1e12
 X = [Re, St, Ca]
 popt, pcov = curve_fit(dependency, X, C[I])
+print('Error is ',  np.sqrt(np.diag(pcov)))
 print('A: ', popt[0])
 print('B: ', popt[1])
 print('aRe: ', popt[2])
@@ -80,6 +81,6 @@ plt.plot(
 plt.plot(
     x_cont, popt[0] * x_cont + popt[1],
     linewidth=2, label="correlation")
-#plt.xscale('log')
-#plt.yscale('log')
+plt.xscale('log')
+plt.yscale('log')
 plt.show()
