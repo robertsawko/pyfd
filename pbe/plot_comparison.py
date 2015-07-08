@@ -43,3 +43,5 @@ ax.set_ylabel('d (numerical) [mm]')
 ax.set_xlabel('d (experimental) [mm]')
 plt.savefig('validationData/plots/comparison.pdf')
 plt.show()
+
+print dExp.shape

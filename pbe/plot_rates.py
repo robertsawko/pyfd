@@ -64,12 +64,15 @@ x[2] = v[escapeCoal]
 y[2] = Q[escapeCoal]
 
 ax.plot(
-    x / v0, y, 's', markersize=10)
+    x / v0, y, 's', markersize=10, color='black')
+ax.text(x[0] / v0, y[0] * 1.15, '3', fontsize=16)
+ax.text(x[1] / v0, y[1] * 1.15, '1', fontsize=16)
+ax.text(x[2] / v0, y[2] * 1.15, '2', fontsize=16)
 
 ax.legend(loc='best')
 ax.set_xlim(0.5, 1.7)
 ax.set_ylim(0.0, 0.013)
-ax.set_xlabel('v')
+ax.set_xlabel(r'$v/v_0$')
 ax.set_ylabel('rate [1/s]')
-plt.savefig('rates.pdf')
+plt.savefig('validationData/plots/rates.pdf')
 plt.show()

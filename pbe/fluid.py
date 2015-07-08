@@ -52,7 +52,7 @@ class fluid:
             self.numberOfClasses = 120
             self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
             self.St = 2.0 / 9.0 * (self.expectedD / self.D) ** 2 \
-                * self.Re * self.R
+                * self.Re / self.R
             self.Ca = self.muc * self.U[caseNr] / self.sigma
         elif name == "simmonsAzzopardi":
 	    self.caseNs = np.array([1])
@@ -81,7 +81,7 @@ class fluid:
             self.numberOfClasses = 50
             self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
             self.St = 2.0 / 9.0 * (self.expectedD / self.D) ** 2 \
-                * self.Re * self.R
+                * self.Re / self.R
             self.Ca = self.muc * self.U / self.sigma
         elif name == "angeli":
 	    self.caseNs = np.array([5])
@@ -114,7 +114,7 @@ class fluid:
             self.numberOfClasses = 50
             self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
             self.St = 2.0 / 9.0 * (self.expectedD / self.D) ** 2 \
-                * self.Re * self.R
+                * self.Re / self.R
             self.Ca = self.muc * self.U / self.sigma
         elif name == "karabelas":
 	    self.caseNs = np.array([4, 3])
@@ -160,7 +160,7 @@ class fluid:
             self.numberOfClasses = 80
             self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
             self.St = 2.0 / 9.0 * (self.expectedD / self.D) ** 2 \
-                * self.Re * self.R
+                * self.Re / self.R
             self.Ca = self.muc * self.U / self.sigma
         elif name == "coulaloglou":
 	    self.caseNs = np.array([5, 5, 4])
@@ -197,7 +197,7 @@ class fluid:
             self.numberOfClasses = 70
             self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
             self.St = 2.0 / 9.0 * (self.expectedD / self.Dstar) ** 2 \
-                * self.Re * self.R
+                * self.Re / self.R
             self.Ca = self.mud * self.Nstar * self.Dstar / self.sigma \
                 * sqrt(self.rhoc / self.rhod)
         else:
