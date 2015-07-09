@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from itertools import cycle
 from scipy.optimize import curve_fit
 
-I = 3
+I = 2
 skipGalinat = True
 skipSimmons = False
 
@@ -15,12 +15,12 @@ def xAxis(x, aRe, aSt, aCa, C1, C2):
   St = x[1]
   Ca = x[2]
   # works for I=3 and I=0
-  return Re ** aRe / St ** aSt / Ca ** aCa
+  #return Re ** aRe / St ** aSt / Ca ** aCa
 
   # works for I=2 
-  #return St ** aSt / Re ** aRe * Ca ** aCa
+  return St ** aSt / Re ** aRe * Ca ** aCa
 
-  # works for I=0
+  # works for I=1
   #return Re ** aRe
 
 def dependency(x, A, B, aRe, aSt, aCa, C1, C2):

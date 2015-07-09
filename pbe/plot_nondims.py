@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from itertools import cycle
 import pylab
 
-I = 3
+I = 2
 skipGalinat = True
 
 
@@ -101,7 +101,8 @@ for name in nondims:
     C = data[3]
     #x = Re ** aRe * St ** aSt * Ca ** aCa
     if I == 2:
-      x = 0.062 * np.log(Re) * St ** 0.65776 * Ca ** 0.54667
+      #x = 0.062 * np.log(Re) * St ** 0.65776 * Ca ** 0.54667
+      x = St ** 0.67935 / Re ** 0.9811 * Ca ** (-0.2008)
     elif I == 3:
       x = Re ** 1.6296 / St ** 0.5044 / Ca ** 0.2987
     else:
@@ -117,7 +118,8 @@ x = np.linspace(xMin, xMax)
 
 
 if I == 2:
-  y = 1.7367e-14 + 1.6268e-12 * x
+  #y = 1.7367e-14 + 1.6268e-12 * x
+  y = - 3.1531e-14 + 3.33746e-09 * x
 elif I == 1:
   y = 0.0355 + x * 0.0
 elif I == 0:
