@@ -29,8 +29,8 @@ for case in caseNs:
     for j in np.arange(case[i]):
       pbe_solutions = dict()
       F = fluid.fluid(caseName[caseId], i, j)
-      C1 = 0.00395
-      C2 = 0.0355
+      C1 = -3.15815e-06 * F.Re ** 0.598 / F.St ** 0.1502 / F.Ca ** 0.06395 + 0.0063983
+      C2 = -8.46752e-08 * F.Re ** 1.11306 + 0.0473
       C3 = 1.6268e-12 * 0.062 * np.log(F.Re) * F.St ** 0.65776 * F.Ca ** 0.54667 + 1.7367e-14
       C4 = 284255 * F.Re ** 1.6296 / F.St ** 0.5044 / F.Ca ** 0.2987
       F.C = np.array([C1, C2, C3, C4])
