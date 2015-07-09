@@ -65,5 +65,7 @@ def case_error(C):
 C0 = np.array([6.02352486e-03,   5.44936761e-02,   1.39863073e-13,
              3.35891500e+12])
 
-C = fmin(case_error, C0, full_output=True, maxiter=50)
-print C
+#C = fmin(case_error, C0, full_output=True, maxiter=50)
+#print C
+F = fluid('simmonsAzzopardi', 0, 0)
+print F.Re, F.St, F.Ca

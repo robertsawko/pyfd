@@ -68,17 +68,17 @@ class fluid:
             self.D = 0.063
             self.L = 4.5
             self.V = pi * (self.D / 2.0) ** 2 * self.L
-            self.epsilon = 0.082
+            self.epsilon = 0.07978
             self.theta = None
-            self.Re = 78200.0
+            self.Re = 85000.0
             self.timeRange = arange(0.0, 300.0, 1e-01)
             self.expectedD = 0.32e-03
             #self.d0 = np.array([0.9 * self.expectedD, 1.1 * self.expectedD])
             self.d0 = np.array([0.8 * self.expectedD, 1.2 * self.expectedD])
             self.v0 = pi / 6.0 * self.d0 ** 3
             self.s0 = self.v0 / 4.0
-            self.vMax = self.v0 * 4.0
-            self.numberOfClasses = 50
+            self.vMax = self.v0 * 6.0
+            self.numberOfClasses = 80
             self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
             self.St = 2.0 / 9.0 * (self.expectedD / self.D) ** 2 \
                 * self.Re / self.R
