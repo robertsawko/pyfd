@@ -7,7 +7,7 @@ from scipy.optimize import curve_fit
 
 I = 2
 skipGalinat = True
-skipSimmons = False
+skipSimmons = True
 
 
 def xAxis(x, aRe, aSt, aCa, C1, C2):
@@ -21,8 +21,7 @@ def xAxis(x, aRe, aSt, aCa, C1, C2):
     #return St ** aSt / Re ** aRe * Ca ** aCa
     #return (St ** aSt + C1)
     #return (Re ** (aRe - aSt * St / 10) + C1)
-    #return St ** aSt / Re ** aRe 
-    return St
+    return St ** aSt / Re ** aRe / Ca ** aCa
 
   # works for I=1
   #return Re ** aRe

@@ -233,3 +233,7 @@ class fluid:
             * (xi1 ** (2.0 / 9.0) + xi2 ** (2.0 / 9.0)) ** 0.5\
             * self.epsilon ** (1.0 / 3.0) / (1.0 + self.alpha) / self.V
         return exp(exp_argument) * C
+
+    def We(self):
+        return 2.0 * self.epsilon ** (2.0 / 3.0) * self.rhoc\
+            * self.expectedD ** (5.0 / 3.0) / self.sigma
