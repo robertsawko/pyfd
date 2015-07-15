@@ -14,6 +14,7 @@ dNum = np.loadtxt('validationData/comparison/dNum.txt') * 1e03
 #ax.legend(loc='best', shadow=True)
 ax.grid()
 
+print dNum
 ax.plot(
     dExp, dNum, '+', marker=next(markers), color='black',
     linewidth=2)

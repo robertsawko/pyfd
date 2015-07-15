@@ -6,7 +6,7 @@ from itertools import cycle
 from scipy.optimize import curve_fit
 from scipy.special import erf, erfc
 
-I = 3
+I = 2
 skipGalinat = True
 skipSimmons = False
 
@@ -22,14 +22,16 @@ def xAxis(x, aRe, aSt, aCa, aWe, C1, C2):
     # no dependency on St, Re
     if I == 0:
         #return Re ** aRe * We ** aWe
-        return We ** aWe / Ca ** aCa
+	return We ** aWe / Ca ** aCa
+	#return 1e-100 * Re
 
     # I=1
     # increase with We
     # decrease with Re, Ca
     # no dependency on St
     if I == 1:
-        return We ** aWe * Re ** aRe
+	return We ** aWe * Re ** aRe
+	#return 1e-100 * Re
 
     # I=2;
     # increase with We (slowly), St
