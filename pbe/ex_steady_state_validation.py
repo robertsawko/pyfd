@@ -27,7 +27,7 @@ t = arange(0.0, 10, 0.005)
 t_ss = arange(0.0, 5.0, 1.0)
 # Initial number of monomers
 N0 = 10000
-grids = [20, 40, 80]
+grids = [20, 60]
 #grids = [20]
 kc = 1.0
 kb = 0.25
@@ -67,7 +67,7 @@ for g in grids:
     # set minimum and maximum number of iterations
     Ss[g].setIter(1, 200)
     # how much the error must decrease
-    Ss[g].setError(1e-08)
+    Ss[g].setError(1e-03)
     Ss[g].setMassTol(0.7, 1.3)
     Ss[g].solve()
 print "Time elepsed for steady state PBE solution: ", time() - start
@@ -83,17 +83,18 @@ for n in sorted(Ss):
     ax.loglog(
         Ss[n].xi, Ss[n].solution, "+",
         marker=next(markers),
-        label="Steady state solution with N={0}".format(n))
+        label="Steady state solution ({0} classes)".format(n))
 
 for n in sorted(pbe_solutions):
     ax.loglog(
         pbe_solutions[n].xi, pbe_solutions[n].N[-1], "+",
         marker=next(markers),
-        label="MOC with N={0}".format(n))
+        label="MOC with ({0} classes)".format(n))
 ax.loglog(
     v, N0 * blatz_and_tobolsky_pbe_solution(v, t[-1], kc, kb), "-k",
     linewidth=2, label="Analytical $t=\infty$")
 ax.legend(loc='best', shadow=True)
 ax.set_xlabel('Volume')
 ax.set_ylabel('N/N0')
+plt.savefig('comparison.pdf')
 plt.show()

@@ -52,9 +52,10 @@ class fluid:
             self.numberOfClasses = 120
             self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
             self.St = 2.0 / 9.0 * (self.expectedD / self.D) ** 2 \
-                * self.Re * self.R
+                * self.Re / self.R
             self.Ca = self.muc * self.U[caseNr] / self.sigma
         elif name == "simmonsAzzopardi":
+            self.caseNs = np.array([1])
             self.rhoc = 797.0
             self.muc = 1.8e-03
             self.rhod = 1166.0
@@ -67,22 +68,23 @@ class fluid:
             self.D = 0.063
             self.L = 4.5
             self.V = pi * (self.D / 2.0) ** 2 * self.L
-            self.epsilon = 0.082
+            self.epsilon = 0.07978
             self.theta = None
-            self.Re = 78200.0
+            self.Re = 85000.0
             self.timeRange = arange(0.0, 300.0, 1e-01)
             self.expectedD = 0.32e-03
             #self.d0 = np.array([0.9 * self.expectedD, 1.1 * self.expectedD])
             self.d0 = np.array([0.8 * self.expectedD, 1.2 * self.expectedD])
             self.v0 = pi / 6.0 * self.d0 ** 3
             self.s0 = self.v0 / 4.0
-            self.vMax = self.v0 * 4.0
-            self.numberOfClasses = 50
+            self.vMax = self.v0 * 6.0
+            self.numberOfClasses = 80
             self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
             self.St = 2.0 / 9.0 * (self.expectedD / self.D) ** 2 \
-                * self.Re * self.R
+                * self.Re / self.R
             self.Ca = self.muc * self.U / self.sigma
         elif name == "angeli":
+            self.caseNs = np.array([5])
             self.rhoc = 801.0
             self.muc = 1.6e-03
             self.rhod = 1000.0
@@ -112,9 +114,56 @@ class fluid:
             self.numberOfClasses = 50
             self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
             self.St = 2.0 / 9.0 * (self.expectedD / self.D) ** 2 \
-                * self.Re * self.R
+                * self.Re / self.R
+            self.Ca = self.muc * self.U / self.sigma
+        elif name == "karabelas":
+            self.caseNs = np.array([4, 3])
+            self.runnumber = []
+            self.runnumber.append(['3S', '5S', '6S', '7S'])
+            self.runnumber.append(['11S', '17S', '10S'])
+            self.rhocs = [798.0, 890.0]
+            self.rhoc = self.rhocs[caseNr]
+            self.mucs = [1.8e-03, 16.0e-03]
+            self.muc = self.mucs[caseNr]
+            self.rhod = 1000.0
+            self.mud = 1.0e-03
+            self.sigmas = [33.1e-03, 34.0e-03]
+            self.sigma = self.sigmas[caseNr]
+            self.Us = []
+            self.Us.append([2.98, 2.57, 2.22, 1.84])
+            self.Us.append([3.00, 2.60, 2.24])
+            self.U = self.Us[caseNr][caseNr2]
+            # volume fraction
+            self.alpha = 0.2
+            # pipe diameter, length and volume
+            self.D = 5.04e-02
+            self.L = 4.5
+            self.V = pi * (self.D / 2.0) ** 2 * self.L
+            self.epsilons = []
+            self.epsilons.append([0.145, 0.09855, 0.0671, 0.041])
+            self.epsilons.append([0.322, 0.221, 0.150])
+            self.epsilon = self.epsilons[caseNr][caseNr2]
+            self.theta = None
+            self.Res = []
+            self.Res.append([66585.0, 57424.0, 49603.0, 41112.0])
+            self.Res.append([8410.5, 7289.0, 6280.0])
+            self.Re = self.Res[caseNr][caseNr2]
+            self.timeRange = arange(0.0, 300.0, 1e-01)
+            self.expectedDs = []
+            self.expectedDs.append([407.0, 455.0, 794.0, 1066.0])
+            self.expectedDs.append([347.0, 401.0, 512.0])
+            self.expectedD = self.expectedDs[caseNr][caseNr2] * 1e-06
+            self.d0 = np.array([0.8 * self.expectedD, 1.2 * self.expectedD])
+            self.v0 = pi / 6.0 * self.d0 ** 3
+            self.s0 = self.v0 / 4.0
+            self.vMax = self.v0 * 4.0
+            self.numberOfClasses = 80
+            self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
+            self.St = 2.0 / 9.0 * (self.expectedD / self.D) ** 2 \
+                * self.Re / self.R
             self.Ca = self.muc * self.U / self.sigma
         elif name == "coulaloglou":
+            self.caseNs = np.array([5, 5, 4])
             self.rhoc = 1000.0
             self.muc = 1.0e-03
             self.rhod = 972.0
@@ -148,11 +197,11 @@ class fluid:
             self.numberOfClasses = 70
             self.R = 2.0 * self.rhoc / (2.0 * self.rhod + self.rhoc)
             self.St = 2.0 / 9.0 * (self.expectedD / self.Dstar) ** 2 \
-                * self.Re * self.R
+                * self.Re / self.R
             self.Ca = self.mud * self.Nstar * self.Dstar / self.sigma \
-                * sqrt(self.rhoc / self.rhoc)
+                * sqrt(self.rhoc / self.rhod)
         else:
-            sys.exit("Valid cases are: 'galinat', 'simmonsAzzopardi', 'coulaloglou', 'angeli'")
+            sys.exit("Valid cases are: 'galinat', 'simmonsAzzopardi', 'coulaloglou', 'angeli', 'karabelas'")
 
         # default values from Coulaloglou and Tavlarides
         self.C = np.array([0.04, 0.08, 2.17e-16, 2.28e13])
@@ -184,3 +233,7 @@ class fluid:
             * (xi1 ** (2.0 / 9.0) + xi2 ** (2.0 / 9.0)) ** 0.5\
             * self.epsilon ** (1.0 / 3.0) / (1.0 + self.alpha) / self.V
         return exp(exp_argument) * C
+
+    def We(self):
+        return 2.0 * self.epsilon ** (2.0 / 3.0) * self.rhoc\
+            * self.expectedD ** (5.0 / 3.0) / self.sigma
