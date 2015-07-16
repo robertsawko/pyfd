@@ -1,6 +1,7 @@
 import numpy as np
 from numpy import arange, sum, exp, linspace, sqrt, pi, zeros
 import sys
+from ConfigParser import ConfigParser
 
 
 class fluid:
@@ -10,6 +11,8 @@ class fluid:
     """
 
     def __init__(self, name, caseNr=0, caseNr2=0):
+        self.name = name
+        self.index = [caseNr, caseNr2]
         if name == "galinat":
             self.rhoc = 996.0
             self.rhod = 683.7
@@ -237,3 +240,13 @@ class fluid:
     def We(self):
         return 2.0 * self.epsilon ** (2.0 / 3.0) * self.rhoc\
             * self.expectedD ** (5.0 / 3.0) / self.sigma
+
+    def initialC(self):
+        data = ConfigParser()
+        data.read('validationData/initial_constants.ini')
+        name = self.name + '-'\
+            + repr(self.index[0]) + '-' + repr(self.index[1])
+        C = []
+        for i in range(4):
+            C.append(data.get(name, 'C' + repr(i + 1)))
+        return C
