@@ -55,7 +55,7 @@ class fluid:
                 * self.Re / self.R
             self.Ca = self.muc * self.U[caseNr] / self.sigma
         elif name == "simmonsAzzopardi":
-	    self.caseNs = np.array([1])
+            self.caseNs = np.array([1])
             self.rhoc = 797.0
             self.muc = 1.8e-03
             self.rhod = 1166.0
@@ -84,7 +84,7 @@ class fluid:
                 * self.Re / self.R
             self.Ca = self.muc * self.U / self.sigma
         elif name == "angeli":
-	    self.caseNs = np.array([5])
+            self.caseNs = np.array([5])
             self.rhoc = 801.0
             self.muc = 1.6e-03
             self.rhod = 1000.0
@@ -117,10 +117,10 @@ class fluid:
                 * self.Re / self.R
             self.Ca = self.muc * self.U / self.sigma
         elif name == "karabelas":
-	    self.caseNs = np.array([4, 3])
-	    self.runnumber = []
-	    self.runnumber.append(['3S', '5S', '6S', '7S'])
-	    self.runnumber.append(['11S', '17S', '10S'])
+            self.caseNs = np.array([4, 3])
+            self.runnumber = []
+            self.runnumber.append(['3S', '5S', '6S', '7S'])
+            self.runnumber.append(['11S', '17S', '10S'])
             self.rhocs = [798.0, 890.0]
             self.rhoc = self.rhocs[caseNr]
             self.mucs = [1.8e-03, 16.0e-03]
@@ -139,7 +139,7 @@ class fluid:
             self.D = 5.04e-02
             self.L = 4.5
             self.V = pi * (self.D / 2.0) ** 2 * self.L
-            self.epsilons = [] 
+            self.epsilons = []
             self.epsilons.append([0.145, 0.09855, 0.0671, 0.041])
             self.epsilons.append([0.322, 0.221, 0.150])
             self.epsilon = self.epsilons[caseNr][caseNr2]
@@ -163,7 +163,7 @@ class fluid:
                 * self.Re / self.R
             self.Ca = self.muc * self.U / self.sigma
         elif name == "coulaloglou":
-	    self.caseNs = np.array([5, 5, 4])
+            self.caseNs = np.array([5, 5, 4])
             self.rhoc = 1000.0
             self.muc = 1.0e-03
             self.rhod = 972.0

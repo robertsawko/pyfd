@@ -20,6 +20,7 @@ class SteadyStateSolution:
        #pdb.set_trace()
         dNdt = zeros(self.number_of_classes)
 
+        # TODO: Refactor that to MOC and create MOC inheritance
         if self.gamma is not None and self.beta is not None:
             for i in arange(self.number_of_classes):
                 # Death breakup term

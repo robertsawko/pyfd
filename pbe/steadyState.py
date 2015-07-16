@@ -1,16 +1,12 @@
-from numpy import arange, sum, exp, linspace, sqrt, pi, zeros, genfromtxt
-from itertools import cycle
+from numpy import arange, sum, exp, sqrt, pi
 from steadyStateSolver import SteadyStateSolution
-import matplotlib.pyplot as plt
 from fluid import fluid
-import os.path
 import numpy as np
-from scipy.optimize import minimize, fmin, fmin_powell
+from scipy.optimize import fmin
 from sys import argv
 
 
 def case_error(C):
-    pbe_solutions = dict()
     F = fluid(argv[1], (int)(argv[2]), (int)(argv[3]))
 
     F.C = C
@@ -18,7 +14,7 @@ def case_error(C):
     print 'constants: ', F.C[0], F.C[1], F.C[2], F.C[3]
 
     Er = 0.0
-    for i in np.arange(2):
+    for i in range(2):
         t = F.timeRange
         v0 = F.v0[i]
         s0 = F.s0[i]
@@ -32,16 +28,16 @@ def case_error(C):
             * 1.0 / s0 / sqrt(2.0 * pi)\
             * exp(- (v - v0) ** 2 / 2 / s0 ** 2)
 
-        pbe_solutions[0] = SteadyStateSolution(
+        pbe_solutions = SteadyStateSolution(
             Ninit, t, dv,
             Q=F.Q,
             gamma=F.gamma,
             beta=F.beta,
             pdf='number'
         )
-        pbe_solutions[0].solve()
+        pbe_solutions.solve()
 
-        N = pbe_solutions[0].solution
+        N = pbe_solutions.solution
         m1 = sum(N[:] * v[:])
         m1Init = sum(Ninit[:] * v[:])
         norm = sum(N)
@@ -50,23 +46,16 @@ def case_error(C):
         print 'calculated, experimental d: ', dMean, F.expectedD
         print 'mass conservations: ', m1 / m1Init
         Er += sqrt((dMean - F.expectedD) ** 2) / F.expectedD
-        #fig = plt.figure()
-        #ax = fig.gca()
-        #ax.plot(
-            #v, N, "+",
-            #label="result")
-        #ax.plot(
-            #v, Ninit, "+",
-            #label="Ninit")
     return Er
 
 # -----------------------------------------------------------------
 
-C0 = np.array([6.02352486e-03,   5.44936761e-02,   1.39863073e-13,
-             3.35891500e+12])
+
+# TODO: move C0 to fluid class
+C0 = np.array([6.02352486e-03, 5.44936761e-02, 1.39863073e-13, 3.35891500e+12])
+
+# TODO: construct list of cases
 
 C = fmin(case_error, C0, full_output=True, maxiter=50)
 print C
-#for i in range(5):
-    #F = fluid('karabelas', 1, i)
-    #print F.Re, F.St, F.Ca, F.We()
+# TODO write a for loop over the list of cases with parallel execution
