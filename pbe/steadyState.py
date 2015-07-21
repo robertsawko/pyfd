@@ -5,6 +5,17 @@ import numpy as np
 from scipy.optimize import fmin
 from sys import argv
 
+Er = 0
+error_file = "validationData/convergence_example.txt"
+
+
+def write_error(C):
+    with open(error_file, "a") as myfile:
+            myfile.write(repr(Er))
+            for c in C:
+                myfile.write(" " + repr(c))
+            myfile.write('\n')
+
 
 def case_error(C):
     F = fluid(argv[1], (int)(argv[2]), (int)(argv[3]))
@@ -13,6 +24,7 @@ def case_error(C):
     print '--------------'
     print 'constants: ', F.C[0], F.C[1], F.C[2], F.C[3]
 
+    global Er
     Er = 0.0
     for i in range(2):
         t = F.timeRange
@@ -52,10 +64,12 @@ def case_error(C):
 
 
 # TODO: move C0 to fluid class
-C0 = np.array([6.02352486e-03, 5.44936761e-02, 1.39863073e-13, 3.35891500e+12])
+F = fluid(argv[1], (int)(argv[2]), (int)(argv[3]))
+C0 = np.array(F.initialC())
+#C0 = 0.75 * C0
 
 # TODO: construct list of cases
-
-C = fmin(case_error, C0, full_output=True, maxiter=50)
+open(error_file, 'w').close()
+C = fmin(case_error, C0, full_output=True, maxiter=50, callback=write_error)
 print C
 # TODO write a for loop over the list of cases with parallel execution

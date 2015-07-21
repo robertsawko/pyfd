@@ -248,5 +248,5 @@ class fluid:
             + repr(self.index[0]) + '-' + repr(self.index[1])
         C = []
         for i in range(4):
-            C.append(data.get(name, 'C' + repr(i + 1)))
+            C.append((float)(data.get(name, 'C' + repr(i + 1))))
         return C
