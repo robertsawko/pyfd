@@ -1,6 +1,5 @@
 from numpy import arange, zeros
 from scipy.integrate import odeint
-import pdb
 
 """
 Method of classes
@@ -15,7 +14,6 @@ class MOCSolution:
     def RHS(
         self, N, t
     ):
-        #pdb.set_trace()
         dNdt = zeros(self.number_of_classes)
 
         if self.gamma is not None and self.beta is not None:
