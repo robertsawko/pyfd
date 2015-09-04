@@ -25,9 +25,9 @@ class MOCSolution:
                 if i != (self.number_of_classes - 1):
                     for j in arange(i + 1, self.number_of_classes):
                         dNdt[i] += \
-                            self.beta(self.xi[i], self.xi[j]) \
-                            * self.gamma(self.xi[j]) \
-                            * N[j] * self.delta_xi
+                            self.beta(self.xi[i], self.xi[j]) * \
+                            self.gamma(self.xi[j]) * \
+                            N[j] * self.delta_xi
 
         if self.Q is not None:
             for i in arange(self.number_of_classes):
@@ -42,7 +42,7 @@ class MOCSolution:
                         dNdt[i] -= N[i] * N[j] * self.Q(self.xi[i], self.xi[j])
 
         if self.theta is not None:
-            dNdt += (self.u0 * self.N0 - N / self.theta)
+            dNdt += (self.n0 * self.A0 - N / self.theta)
 
         return dNdt
 
@@ -52,7 +52,7 @@ class MOCSolution:
     def __init__(
             self, N0, t, xi0,
             beta=None, gamma=None, Q=None,
-            theta=None, u0=None):
+            theta=None, n0=None, A0=None):
         self.number_of_classes = N0.shape[0]
         self.N0 = N0
         # Kernels setup
@@ -60,7 +60,8 @@ class MOCSolution:
         self.gamma = gamma  # Breakup frequency
         self.Q = Q  #
         self.xi0 = xi0
-        self.u0 = u0
+        self.n0 = n0
+        self.A0 = A0
         self.theta = theta
         # Uniform grid
         self.xi = xi0 + xi0 * arange(self.number_of_classes)
