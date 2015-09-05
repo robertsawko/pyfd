@@ -1,4 +1,4 @@
-from numpy import arange, zeros
+from numpy import arange, zeros, pi
 from scipy.integrate import odeint
 
 """
@@ -17,10 +17,9 @@ class MOCSolution:
         dNdt = zeros(self.number_of_classes)
 
         if self.gamma is not None and self.beta is not None:
+            # Death breakup term
+            dNdt[1:] -= N[1:] * self.gamma(self.xi[1:])
             for i in arange(self.number_of_classes):
-                # Death breakup term
-                if i != 0:
-                    dNdt[i] -= N[i] * self.gamma(self.xi[i])
                 # Birth breakup term
                 if i != (self.number_of_classes - 1):
                     for j in arange(i + 1, self.number_of_classes):
@@ -48,6 +47,15 @@ class MOCSolution:
 
     def number_density(self):
         return self.N / self.xi0
+
+    @property
+    def d32(self):
+        return \
+            (6 / pi * sum(self.N[-1] * self.xi) / sum(self.N[-1]))**(1. / 3)
+
+    @property
+    def total_volume(self):
+        return sum(self.N[-1] * self.xi)
 
     def __init__(
             self, N0, t, xi0,
