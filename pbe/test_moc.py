@@ -37,7 +37,7 @@ def compare_with_analytical_pbe(
     for k, g in enumerate(grids):
         L2_pbe_errors[k] = L2_relative_error(
             pbe_solutions[g].xi,
-            pbe_solutions[g].number_density()[-1],
+            pbe_solutions[g].number_density[-1],
             pbe_analytical(pbe_solutions[g].xi)
         )
     check_error_convergence(L2_pbe_errors)
@@ -184,7 +184,7 @@ def test_simultaneous_breakup_and_coalescence():
     )
     error = L2_relative_error(
         pbe_solution.xi,
-        pbe_solution.number_density()[-1],
+        pbe_solution.number_density[-1],
         N0 * blatz_and_tobolsky_pbe_solution(pbe_solution.xi, time[-1], kc, kb)
     )
     assert_almost_equal(error, 0.0, decimal=1)

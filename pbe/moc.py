@@ -1,4 +1,5 @@
 from numpy import arange, zeros, pi
+from numpy import sum as nsum
 from scipy.integrate import odeint
 
 """
@@ -37,7 +38,7 @@ class MOCSolution:
                             self.Q[j, i - j - 1]
                 # Death coalescence term
                 if i != (self.number_of_classes - 1):
-                    for j in arange(self.number_of_classes):
+                    for j in arange(self.number_of_classes - i):
                         dNdt[i] -= N[i] * N[j] * self.Q[i, j]
 
         if self.theta is not None:
@@ -56,7 +57,11 @@ class MOCSolution:
 
     @property
     def total_volume(self):
-        return sum(self.N[-1] * self.xi)
+        return nsum(self.N[-1] * self.xi)
+
+    @property
+    def total_numbers(self):
+        return nsum(self.N, axis=1)
 
     def __init__(
             self, N0, t, xi0,
@@ -66,7 +71,6 @@ class MOCSolution:
         self.N0 = N0
         self.xi0 = xi0
         self.n0 = n0
-        self.A0 = A0
         self.theta = theta
         # Uniform grid
         self.xi = xi0 + xi0 * arange(self.number_of_classes)
@@ -89,6 +93,11 @@ class MOCSolution:
                     self.Q[i, j] = Q(self.xi[i], self.xi[j])  #
         else:
             self.Q = None
+
+        if A0 is not None:
+            self.A0 = A0(self.xi) * xi0
+        else:
+            self.A0 = None
         self.delta_xi = xi0
         # Solve procedure
         self.N = odeint(lambda NN, t: self.RHS(NN, t), N0, t)
