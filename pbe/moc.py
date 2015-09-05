@@ -18,14 +18,14 @@ class MOCSolution:
 
         if self.gamma is not None and self.beta is not None:
             # Death breakup term
-            dNdt[1:] -= N[1:] * self.gamma(self.xi[1:])
+            dNdt[1:] -= N[1:] * self.gamma[1:]
             for i in arange(self.number_of_classes):
                 # Birth breakup term
                 if i != (self.number_of_classes - 1):
                     for j in arange(i + 1, self.number_of_classes):
                         dNdt[i] += \
-                            self.beta(self.xi[i], self.xi[j]) * \
-                            self.gamma(self.xi[j]) * \
+                            self.beta[i, j] * \
+                            self.gamma[j] * \
                             N[j] * self.delta_xi
 
         if self.Q is not None:
@@ -33,12 +33,12 @@ class MOCSolution:
                 # Birth coalescence term
                 if i != 0:
                     for j in arange(i):
-                        dNdt[i] += 0.5 * N[i - j - 1] * N[j] \
-                            * self.Q(self.xi[j], self.xi[i - j - 1])
+                        dNdt[i] += 0.5 * N[i - j - 1] * N[j] *\
+                            self.Q[j, i - j - 1]
                 # Death coalescence term
                 if i != (self.number_of_classes - 1):
                     for j in arange(self.number_of_classes):
-                        dNdt[i] -= N[i] * N[j] * self.Q(self.xi[i], self.xi[j])
+                        dNdt[i] -= N[i] * N[j] * self.Q[i, j]
 
         if self.theta is not None:
             dNdt += (self.n0 * self.A0 - N / self.theta)
@@ -63,16 +63,31 @@ class MOCSolution:
             theta=None, n0=None, A0=None):
         self.number_of_classes = N0.shape[0]
         self.N0 = N0
-        # Kernels setup
-        self.beta = beta  # Daughter particle distribution
-        self.gamma = gamma  # Breakup frequency
-        self.Q = Q  #
         self.xi0 = xi0
         self.n0 = n0
         self.A0 = A0
         self.theta = theta
         # Uniform grid
         self.xi = xi0 + xi0 * arange(self.number_of_classes)
+        # Kernels setup
+        if gamma is not None:
+            self.gamma = gamma(self.xi)
+            self.beta = zeros((self.number_of_classes, self.number_of_classes))
+            for i in range(len(self.xi)):
+                for j in range(len(self.xi)):
+                    self.beta[i, j] = beta(self.xi[i], self.xi[j])
+
+        else:
+            self.gamma = None
+            self.beta = None
+
+        if Q is not None:
+            self.Q = zeros((self.number_of_classes, self.number_of_classes))
+            for i in range(len(self.xi)):
+                for j in range(len(self.xi)):
+                    self.Q[i, j] = Q(self.xi[i], self.xi[j])  #
+        else:
+            self.Q = None
         self.delta_xi = xi0
         # Solve procedure
         self.N = odeint(lambda NN, t: self.RHS(NN, t), N0, t)
