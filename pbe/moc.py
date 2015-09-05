@@ -45,6 +45,7 @@ class MOCSolution:
 
         return dNdt
 
+    @property
     def number_density(self):
         return self.N / self.xi0
 
