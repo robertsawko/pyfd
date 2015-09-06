@@ -23,7 +23,7 @@ class MOCSolution:
                 dNdt[i] -= N[i] * self.gamma[i]
                 for j in arange(i):
                     dNdt[j] += \
-                        2.0 * self.betadv[j, i] * \
+                        self.nu * self.betadv[j, i] * \
                         self.gamma[i] * \
                         N[i]
 
@@ -73,6 +73,7 @@ class MOCSolution:
         # Uniform grid
         self.xi = xi0 + xi0 * arange(self.number_of_classes)
         self.delta_xi = xi0
+        self.nu = 2.0  # Binary breakup
         # Kernels setup
         if gamma is not None:
             self.gamma = gamma(self.xi)

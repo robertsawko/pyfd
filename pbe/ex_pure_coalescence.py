@@ -17,7 +17,7 @@ Case setup based on:
     initial IC.
 """
 
-grids = [10, 20, 40, 80, 160]
+grids = [20, 40, 80]
 time = arange(0.0, 1, 0.001)
 vmax = 1e1
 C = 0.1
@@ -66,13 +66,13 @@ v = linspace(0, vmax, 10000)
 
 for n in sorted(pbe_solutions):
     ax.loglog(
-        pbe_solutions[n].xi, pbe_solutions[n].number_density()[-1], "+",
+        pbe_solutions[n].xi, pbe_solutions[n].number_density[-1], '+',
         marker=next(markers),
         label="MOC with N={0}".format(n))
 ax.loglog(
     v, scott_pbe_solution3(v, time[-1], C=C, xi0=2.0 * v0, N0=N0), "-k",
     linewidth=2, label="Analytical $t=\infty$")
-ax.legend(loc='upper right', shadow=True)
-ax.set_xlabel('Volume')
-ax.set_ylabel('$N$ - total number')
+ax.legend(loc='lower left', shadow=True)
+ax.set_xlabel('Particle volume')
+ax.set_ylabel('Number density function')
 plt.show()

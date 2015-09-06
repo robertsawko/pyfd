@@ -13,7 +13,7 @@ Case setup based on:
 
     B&T equations capture the evolution of polymer sized from a distribution of
     monomers. The kernels give constant coefficients for breakup and
-    coalescence. Special care needs to be taken as the case is discrete. 
+    coalescence. Special care needs to be taken as the case is discrete.
 
     NOTE: B&T equations are normalised with respect to initial number of
     monomers N0. Because of the difference with our formulation the coalescence
@@ -40,7 +40,7 @@ for g in grids:
         # formulations equivalent
         Q=lambda x, y: kc / N0,
         # Guard has to be imlemented in order to avoid division by zero
-        beta=lambda x, y: 2.0 / max([y - 1.0, 1e-6]),
+        beta=lambda x, y: 1.0 / max([y - 1.0, 1e-6]),
         gamma=lambda x: kb * (x - 1.0)
     )
 

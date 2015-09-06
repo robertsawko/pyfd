@@ -13,7 +13,7 @@ Case setup based on:
 
     We are looking at case 4. from their paper with kernel F(x, y) = x + y.
     This corresponds to choosing:
-        beta = 2.0/y,
+        beta = 1.0/y,
         Gamma = y^2,
     for our kernels.
 """
@@ -28,7 +28,7 @@ for g in grids:
     N0[-1] = 1
     pbe_solutions[g] = MOCSolution(
         N0, time, vmax / g,
-        beta=lambda x, y: 2.0 / y,
+        beta=lambda x, y: 1.0 / y,
         gamma=lambda x: x**2
     )
 
@@ -65,7 +65,7 @@ v = linspace(0, vmax, 10000)
 
 for n in sorted(pbe_solutions):
     ax.loglog(
-        pbe_solutions[n].xi, pbe_solutions[n].number_density()[-1], "+",
+        pbe_solutions[n].xi, pbe_solutions[n].number_density[-1], "+",
         marker=next(markers),
         label="MOC with N={0}".format(n))
 ax.loglog(

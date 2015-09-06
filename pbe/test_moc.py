@@ -112,7 +112,7 @@ def test_pure_binary_breakup():
         N0[-1] = 1
         pbe_solutions[g] = MOCSolution(
             N0, time, l / g,
-            beta=lambda x, y: 2.0 / y,
+            beta=lambda x, y: 1.0 / y,
             gamma=lambda x: x**2
         )
 
