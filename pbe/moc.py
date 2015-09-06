@@ -17,17 +17,15 @@ class MOCSolution:
     ):
         dNdt = zeros(self.number_of_classes)
 
-        if self.gamma is not None and self.beta is not None:
+        if self.gamma is not None and self.betadv is not None:
             # Death breakup term
-            dNdt[1:] -= N[1:] * self.gamma[1:]
-            for i in arange(self.number_of_classes):
-                # Birth breakup term
-                if i != (self.number_of_classes - 1):
-                    for j in arange(i + 1, self.number_of_classes):
-                        dNdt[i] += \
-                            self.beta[i, j] * \
-                            self.gamma[j] * \
-                            N[j] * self.delta_xi
+            for i in arange(1, self.number_of_classes):
+                dNdt[i] -= N[i] * self.gamma[i]
+                for j in arange(i):
+                    dNdt[j] += \
+                        2.0 * self.betadv[j, i] * \
+                        self.gamma[i] * \
+                        N[i]
 
         if self.Q is not None:
             for i in arange(self.number_of_classes):
@@ -38,7 +36,7 @@ class MOCSolution:
                             self.Q[j, i - j - 1]
                 # Death coalescence term
                 if i != (self.number_of_classes - 1):
-                    for j in arange(self.number_of_classes - i):
+                    for j in arange(self.number_of_classes - i - 1):
                         dNdt[i] -= N[i] * N[j] * self.Q[i, j]
 
         if self.theta is not None:
@@ -74,17 +72,20 @@ class MOCSolution:
         self.theta = theta
         # Uniform grid
         self.xi = xi0 + xi0 * arange(self.number_of_classes)
+        self.delta_xi = xi0
         # Kernels setup
         if gamma is not None:
             self.gamma = gamma(self.xi)
-            self.beta = zeros((self.number_of_classes, self.number_of_classes))
-            for i in range(len(self.xi)):
-                for j in range(len(self.xi)):
-                    self.beta[i, j] = beta(self.xi[i], self.xi[j])
+            self.betadv = zeros(
+                (self.number_of_classes, self.number_of_classes))
+            for i in range(1, len(self.xi)):
+                for j in range(i):
+                    self.betadv[j, i] = beta(self.xi[j], self.xi[i])
+                self.betadv[:, i] = self.betadv[:, i] / sum(self.betadv[:, i])
 
         else:
             self.gamma = None
-            self.beta = None
+            self.betadv = None
 
         if Q is not None:
             self.Q = zeros((self.number_of_classes, self.number_of_classes))
@@ -98,6 +99,5 @@ class MOCSolution:
             self.A0 = A0(self.xi) * xi0
         else:
             self.A0 = None
-        self.delta_xi = xi0
         # Solve procedure
         self.N = odeint(lambda NN, t: self.RHS(NN, t), N0, t)
