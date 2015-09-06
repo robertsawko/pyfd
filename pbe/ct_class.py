@@ -7,10 +7,15 @@ def beta(v1, v2):
 
 
 class CTSolution(MOCSolution):
-    def __init__(self, M=10, v0=0.01, n0=1.):
+    def __init__(
+            self,
+            M=10,
+            Nstar=4.16,  # [rps] impeller revolutions
+            phi=0.15,  # [1] holdup
+            v0=0.03):
         self.D = 10  # [cm] impeller diameter
-        self.Nstar = 4.16  # [rps] impeller revolutions
-        self.phi = 0.15  # [1] holdup
+        self.Nstar = Nstar
+        self.phi = phi
 
         # Water
         self.muc = 0.89e-2  # [P = g * cm^-1 s^-1]
@@ -22,7 +27,7 @@ class CTSolution(MOCSolution):
         time = arange(0.0, 3600, 1)
 
         mm3_to_cm3 = 0.1**3
-        vmax = 0.06 * mm3_to_cm3
+        vmax = 0.08 * mm3_to_cm3
 
         # Feed distribution
         self.v0 = v0 * mm3_to_cm3
@@ -31,7 +36,7 @@ class CTSolution(MOCSolution):
         # Feed
         theta = 600
         self.Vt = 12 * 10**3
-        self.n0 = n0 * self.Vt / theta
+        self.n0 = self.Vt / theta
         Ninit = zeros(M)
         MOCSolution.__init__(
             self, Ninit, time, vmax / M,
