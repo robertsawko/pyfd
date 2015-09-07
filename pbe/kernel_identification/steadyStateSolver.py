@@ -87,7 +87,7 @@ class SteadyStateSolution:
                 break
             rhs = self.rhs
             er = sum(rhs * rhs)
-        print "Converged in ", i, " iterations"
+        print("Converged in ", i, " iterations")
         #return N0
         self.solution = N0
 
