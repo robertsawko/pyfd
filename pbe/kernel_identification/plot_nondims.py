@@ -1,7 +1,5 @@
-import scipy as sp
 import numpy as np
-from scipy.optimize import minimize, fmin, basinhopping, brute
-import matplotlib.pyplot as plt
+from aux import set_plt_params, plt
 from itertools import cycle
 import pylab
 
@@ -92,6 +90,7 @@ names['angeli'] = ('Angeli and Hewitt (2000)')
 nondims['karabelas'] = (karabelas())
 names['karabelas'] = ('Karabelas (1978)')
 
+set_plt_params(relative_fig_width=0.49)
 fig = plt.figure()
 ax = fig.gca()
 markers = cycle(['o', 's', 'v', '*', '.', ','])
@@ -105,7 +104,7 @@ for name in nondims:
     Ca = data[2]
     We = data[3]
     C = data[4]
-    #x = Re ** aRe * St ** aSt * Ca ** aCa
+    # x = Re ** aRe * St ** aSt * Ca ** aCa
     if I == 2:
         aCa = 1.3927752887548224
         aSt = 0.71738786775149754
@@ -156,28 +155,28 @@ if I > 1:
 if I == 0:
     # x = We ** aWe / Ca ** aCa
     ax.set_xlabel(
-        r'$We^{' + format(aWe, '.3f') + '}$'
-        + r'$Ca^{' + format(-aCa, '.3f') + '}$'
+        r'$We^{' + format(aWe, '.3f') + '}$' +
+        r'$Ca^{' + format(-aCa, '.3f') + '}$'
         )
 if I == 1:
     # x = We ** aWe * Re ** aRe
     ax.set_xlabel(
-        r'$We^{' + format(aWe, '.3f') + '}$'
-        + r'$Re^{' + format(aRe, '.3f') + '}$'
+        r'$We^{' + format(aWe, '.3f') + '}$' +
+        r'$Re^{' + format(aRe, '.3f') + '}$'
         )
 elif I == 2:
     # x = St ** aSt * (Ca ** aCa * c1 + c2)
     ax.set_xlabel(
-        r'$St^{' + format(aSt, '.3f') + '}$'
-        + r'$(' + format(c1, '.3f') + '$'
+        r'$St^{' + format(aSt, '.3f') + '}$' +
+        r'$(' + format(c1, '.3f') + '$'
         r'$Ca^{' + format(aCa, '.3f') + '}$'
         r'$+' + format(c2, '.3f') + ')}$'
         )
 elif I == 3:
     # x = Re * St ** aSt / We ** aWe
     ax.set_xlabel(
-        r'$St^{' + format(aSt, '.3f') + '}$'
-        + r'$We^{' + format(-aWe, '.3f') + 'Re}$'
+        r'$St^{' + format(aSt, '.3f') + '}$' +
+        r'$We^{' + format(-aWe, '.3f') + 'Re}$'
         )
 
 
