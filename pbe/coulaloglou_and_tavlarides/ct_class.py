@@ -1,6 +1,15 @@
 from moc import MOCSolution
 from numpy import arange, sqrt, exp, pi, zeros
 
+"""
+Case setup based on:
+
+    Colaloglou and Tavlarides (1977)
+    "Description of Interaction Processes in Agitated Liquid-Liquid
+    Dispersions", J. Chem Eng Vol 32
+
+"""
+
 
 def beta(v1, v2):
     return 2.4 / v2 * exp(-4.5 * (2 * v1 - v2)**2 / (v2**2))
@@ -12,7 +21,7 @@ class CTSolution(MOCSolution):
             M=10,
             Nstar=4.16,  # [rps] impeller revolutions
             phi=0.15,  # [1] holdup
-            v0=0.03):
+            v0=0.05):
         self.D = 10  # [cm] impeller diameter
         self.Nstar = Nstar
         self.phi = phi
@@ -27,7 +36,7 @@ class CTSolution(MOCSolution):
         time = arange(0.0, 3600, 1)
 
         mm3_to_cm3 = 0.1**3
-        vmax = 0.08 * mm3_to_cm3
+        vmax = 0.06 * mm3_to_cm3
 
         # Feed distribution
         self.v0 = v0 * mm3_to_cm3
