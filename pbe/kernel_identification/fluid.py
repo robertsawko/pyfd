@@ -1,7 +1,7 @@
 import numpy as np
 from numpy import arange, sum, exp, linspace, sqrt, pi, zeros
 import sys
-from ConfigParser import ConfigParser
+import configparser as ConfigParser
 
 
 class fluid:

@@ -1,12 +1,8 @@
-from numpy import arange, sum, exp, linspace, sqrt, pi, zeros, genfromtxt
+from numpy import arange, sqrt, pi
 from itertools import cycle
-from steadyStateSolver import SteadyStateSolution
-import matplotlib.pyplot as plt
 from fluid import fluid
-import os.path
 import numpy as np
-from scipy.optimize import minimize, fmin, fmin_powell
-from sys import argv
+from aux import set_plt_params, plt
 
 F = fluid('coulaloglou', 0, 0)
 F.C = np.array([0.00299, 0.0256, 6.27e-11, 1.2e14])
@@ -22,28 +18,23 @@ N = F.alpha / v0 * F.V\
 gamma = F.gamma(v)
 Q = np.zeros(v.shape)
 escape = np.zeros(v.shape)
-
+one_over_theta = 0.005
 for i in np.arange(Q.shape[0]):
     if i != (Q.shape[0] - 1):
         for j in arange(Q.shape[0]):
             Q[i] = N[j] * F.Q(v[i], v[j])
-    escape[i] = 0.005
+    escape[i] = one_over_theta
 
+set_plt_params(relative_fig_width=0.7)
 fig = plt.figure()
 ax = fig.gca()
 markers = cycle(['o', 's', 'v', '*', '.', ','])
 linestyles = cycle(['-', '--', ':', '-.'])
 
 ax = fig.gca()
-ax.plot(
-    v / v0, gamma, linewidth=2,
-    label="breakup rate")
-ax.plot(
-    v / v0, Q, linewidth=2,
-    label="coalescence rate")
-ax.plot(
-    v / v0, escape, linewidth=2, linestyle='--',
-    label="escape frequency", color='black')
+ax.plot(v / v0, gamma, label="breakup")
+ax.plot(v / v0, Q, label="coalescence")
+ax.plot(v / v0, escape, linestyle='--', label="escape", color='black')
 
 
 x = np.zeros(3)
@@ -64,15 +55,18 @@ x[2] = v[escapeCoal]
 y[2] = Q[escapeCoal]
 
 ax.plot(
-    x / v0, y, 's', markersize=10, color='black')
-ax.text(x[0] / v0, y[0] * 1.15, '3', fontsize=16)
-ax.text(x[1] / v0, y[1] * 1.15, '1', fontsize=16)
-ax.text(x[2] / v0, y[2] * 1.15, '2', fontsize=16)
+    x / v0, y, 's', color='black')
+ax.text(x[0] / v0, y[0] * 1.15, '3')
+ax.text(x[1] / v0, y[1] * 1.15, '1')
+ax.text(x[2] / v0, y[2] * 1.15, '2')
 
 ax.legend(loc='best')
 ax.set_xlim(0.5, 1.7)
 ax.set_ylim(0.0, 0.013)
 ax.set_xlabel(r'$v/v_0$')
 ax.set_ylabel('rate [1/s]')
-plt.savefig('validationData/plots/rates.pdf')
+plt.yticks([one_over_theta], [r"$\frac{1}{\theta}$"])
+plt.tick_params(
+    axis='x', which='both', bottom='off', top='off', labelbottom='off')
+plt.savefig('validationData/plots/rates.pgf', bbox_inches='tight')
 plt.show()
