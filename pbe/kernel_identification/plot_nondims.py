@@ -90,14 +90,14 @@ names['angeli'] = ('Angeli and Hewitt (2000)')
 nondims['karabelas'] = (karabelas())
 names['karabelas'] = ('Karabelas (1978)')
 
-set_plt_params(relative_fig_width=0.49)
+set_plt_params(relative_fig_width=0.48)
 fig = plt.figure()
 ax = fig.gca()
 markers = cycle(['o', 's', 'v', '*', '.', ','])
 
 xMin = 1e200
 xMax = -1
-for name in nondims:
+for name in sorted(nondims):
     data = nondims[name]
     Re = data[0]
     St = data[1]
@@ -124,9 +124,7 @@ for name in nondims:
         aRe = -0.2238711406747752
         x = We ** aWe * Re ** aRe
 
-    ax.plot(
-        x, C[I], '+', marker=next(markers),
-        linewidth=2, label=names[name])
+    ax.plot(x, C[I], '+', marker=next(markers), label=names[name])
 
     xMin = min(xMin, np.amin(x))
     xMax = max(xMax, np.amax(x))
@@ -155,39 +153,29 @@ if I > 1:
 if I == 0:
     # x = We ** aWe / Ca ** aCa
     ax.set_xlabel(
-        r'$We^{' + format(aWe, '.3f') + '}$' +
-        r'$Ca^{' + format(-aCa, '.3f') + '}$'
-        )
+        r'$We^{{{0:0.3f}}} Ca^{{{1:0.3f}}}$'.format(aWe, -aCa))
 if I == 1:
     # x = We ** aWe * Re ** aRe
     ax.set_xlabel(
-        r'$We^{' + format(aWe, '.3f') + '}$' +
-        r'$Re^{' + format(aRe, '.3f') + '}$'
-        )
+        r'$We^{{{0:0.3f}}} We^{{{1:0.3f}}}$'.format(aWe, aRe))
 elif I == 2:
     # x = St ** aSt * (Ca ** aCa * c1 + c2)
     ax.set_xlabel(
-        r'$St^{' + format(aSt, '.3f') + '}$' +
-        r'$(' + format(c1, '.3f') + '$'
-        r'$Ca^{' + format(aCa, '.3f') + '}$'
-        r'$+' + format(c2, '.3f') + ')}$'
-        )
+        r'$St^{{{0:0.3f}}} Ca^{{{1:0.3f}}}$'.format(aSt, aCa))
 elif I == 3:
     # x = Re * St ** aSt / We ** aWe
     ax.set_xlabel(
-        r'$St^{' + format(aSt, '.3f') + '}$' +
-        r'$We^{' + format(-aWe, '.3f') + 'Re}$'
-        )
+        r'$St^{{{0:0.3f}}} We^{{{1:0.3f}}} Re$'.format(aSt, -aWe))
 
 
-ax.set_ylabel('C' + repr(I + 1))
-ax.plot(
-    x, y, color='black',
-    linewidth=2)
-plt.savefig('validationData/plots/C' + repr(I + 1) + '.pdf')
+fig.suptitle('C' + repr(I + 1))
+plt.subplots_adjust(top=0.8)
+ax.plot(x, y, color='black')
+plt.savefig(
+    'validationData/plots/C' + repr(I + 1) + '.pgf', bbox_inches='tight')
 
-figLegend = pylab.figure(figsize=(4.5, 1.5))
+figLegend = pylab.figure(figsize=(1.8, 0.3))
 pylab.figlegend(*ax.get_legend_handles_labels(), loc='upper left')
-plt.savefig('validationData/plots/legend.pdf')
+plt.savefig('validationData/plots/legend.pgf', bbox_inches='tight')
 
 plt.show()
