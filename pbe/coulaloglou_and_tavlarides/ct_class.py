@@ -27,7 +27,7 @@ class CTSolution(MOCSolution):
         self.phi = phi
 
         # Water
-        self.muc = 0.89e-2  # [P = g * cm^-1 s^-1]
+        self.muc = 1e-2  # [P = g * cm^-1 s^-1]
         self.rhoc = 0.1  # [g/cm3]
         # Kerosene-dicholorebenzene
         self.rhod = 0.972  # [g/cm3]
@@ -49,7 +49,7 @@ class CTSolution(MOCSolution):
         Ninit = zeros(M)
         MOCSolution.__init__(
             self, Ninit, time, vmax / M,
-            beta=beta, gamma=self.g, Q=self.Q,
+            beta=beta, gamma=self.g, Q=self.Qf,
             theta=theta, n0=self.n0, A0=self.A0)
 
     def A0(self, v):
@@ -64,7 +64,7 @@ class CTSolution(MOCSolution):
             exp(- C2 * (1 + self.phi)**2 * self.sigma /
                 (self.rhod * v**(5. / 9) * self.D**(4. / 3) * self.Nstar**2))
 
-    def Q(self, v1, v2, C3=2.8e-6, C4=1.83e9):
+    def Qf(self, v1, v2, C3=2.8e-6, C4=1.83e9):
         d_ratio = (v1**(1. / 3) * v2**(1. / 3)) / (v1**(1. / 3) + v2**(1. / 3))
 
         return C3 * \
