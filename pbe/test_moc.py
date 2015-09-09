@@ -3,6 +3,7 @@ from numpy import (
 from numpy.testing import assert_almost_equal, assert_array_less
 from moc import MOCSolution
 from scipy.special import gamma
+from numpy import piecewise
 
 
 def check_error_convergence(L2_errors):
@@ -108,10 +109,10 @@ def test_pure_binary_breakup():
 
     pbe_solutions = dict()
     for g in grids:
-        N0 = zeros(g)
-        N0[-1] = 1
+        def N0(x):
+            return piecewise(x, [x < l, x == l], [0, g / l])
         pbe_solutions[g] = MOCSolution(
-            N0, time, l / g,
+            g, time, l / g, N0=N0,
             beta=lambda x, y: 1.0 / y,
             gamma=lambda x: x**2
         )
@@ -134,7 +135,7 @@ def test_pure_coalescence_constant():
     Pure coalescence test
     """
     t = arange(0.0, 1, 0.01)
-    vmax = 1e1
+    vmax = 1.0e1
     v0 = 0.5
     N0 = 2
     grids = [10, 20, 40, 80, 160]
@@ -142,11 +143,10 @@ def test_pure_coalescence_constant():
 
     pbe_solutions = dict()
     for g in grids:
-        dv = vmax / g
-        v = dv + dv * arange(g)
-        Ninit = (N0 / v0) * (v / v0) * exp(-v / v0) * dv
+        def N0init(v):
+            return (N0 / v0) * (v / v0) * exp(-v / v0)
         pbe_solutions[g] = MOCSolution(
-            Ninit, t, dv,
+            g, t, vmax / g, N0=N0init,
             Q=lambda x, y: C
         )
 
@@ -165,16 +165,16 @@ def test_simultaneous_breakup_and_coalescence():
     Breakup + coalescence test
     """
     time = arange(0.0, 10, 0.005)
-    N0 = 10000
     # Grid convergence is not applicable in this scenario
     grid = 80
     kc = 1.0
     kb = 0.25
+    N0 = 10000
 
-    Ninit = zeros(grid)
-    Ninit[0] = N0
+    def N0Init(x):
+        return piecewise(x, [x < 2, x > 2], [N0, 0])
     pbe_solution = MOCSolution(
-        Ninit, time, 1.0,
+        grid, time, 1.0, N0=N0Init,
         # Dividing coalescence coefficient by the number of monomers to make
         # formulations equivalent
         Q=lambda x, y: kc / N0,

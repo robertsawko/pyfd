@@ -68,11 +68,10 @@ class MOCSolution:
         return nsum(self.N, axis=1)
 
     def __init__(
-            self, N0, t, dxi, xi0=None,
+            self, number_of_classes, t, dxi, N0=None, xi0=None,
             beta=None, gamma=None, Q=None,
             theta=None, n0=None, A0=None):
-        self.number_of_classes = N0.shape[0]
-        self.N0 = N0
+        self.number_of_classes = number_of_classes
         if xi0 is None:
             self.xi0 = dxi
         else:
@@ -81,6 +80,11 @@ class MOCSolution:
         self.theta = theta
         # Uniform grid
         self.xi = self.xi0 + dxi * arange(self.number_of_classes)
+        if N0 is None:
+            N0 = zeros(number_of_classes)
+        else:
+            N0 = N0(self.xi) * dxi
+
         self.nu = 2.0  # Binary breakup
         # Kernels setup
         if gamma is not None:
