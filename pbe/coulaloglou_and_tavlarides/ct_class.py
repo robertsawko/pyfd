@@ -33,7 +33,7 @@ class CTSolution(MOCSolution):
         self.rhod = 0.972  # [g/cm3]
         self.sigma = 42.82
 
-        time = arange(0.0, 3600, 1)
+        time = arange(0.0, 3600, 0.5)
 
         mm3_to_cm3 = 0.1**3
         vmax = 0.38 * mm3_to_cm3
@@ -50,9 +50,12 @@ class CTSolution(MOCSolution):
         self.n0 = self.Vt / theta
         Ninit = zeros(M)
         MOCSolution.__init__(
-            self, Ninit, time, vmax / M, xi0=vmin,
+            self, M, time, vmax / M, N0=self.N0, xi0=vmin,
             beta=beta, gamma=self.g, Q=self.Qf,
             theta=theta, n0=self.n0, A0=self.A0)
+
+    def N0(self, v):
+        return 0 * v
 
     def A0(self, v):
         return \
@@ -66,7 +69,7 @@ class CTSolution(MOCSolution):
             exp(- C2 * (1 + self.phi)**2 * self.sigma /
                 (self.rhod * v**(5. / 9) * self.D**(4. / 3) * self.Nstar**2))
 
-    def Qf(self, v1, v2, C3=2.8e-6, C4=1.83e9):
+    def Qf(self, v1, v2, C3=1.4e-6, C4=1.83e9):
         d_ratio = (v1**(1. / 3) * v2**(1. / 3)) / (v1**(1. / 3) + v2**(1. / 3))
 
         return C3 * \
