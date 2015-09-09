@@ -15,15 +15,16 @@ class MOCSolution:
     def RHS(
         self, N, t
     ):
+        print("Time = {0:g}".format(t))
         dNdt = zeros(self.number_of_classes)
 
-        if self.gamma is not None and self.betadv is not None:
+        if self.gamma is not None and self.betadxi is not None:
             # Death breakup term
             for i in arange(1, self.number_of_classes):
                 dNdt[i] -= N[i] * self.gamma[i]
                 for j in arange(i):
                     dNdt[j] += \
-                        self.nu * self.betadv[j, i] * \
+                        self.nu * self.betadxi[j, i] * \
                         self.gamma[i] * \
                         N[i]
 
@@ -54,6 +55,11 @@ class MOCSolution:
             (6 / pi * sum(self.N[-1] * self.xi) / sum(self.N[-1]))**(1. / 3)
 
     @property
+    def xi_d(self):
+        return \
+            (6 / pi * self.xi)**(1. / 3)
+
+    @property
     def total_volume(self):
         return nsum(self.N[-1] * self.xi)
 
@@ -62,31 +68,34 @@ class MOCSolution:
         return nsum(self.N, axis=1)
 
     def __init__(
-            self, N0, t, xi0,
+            self, N0, t, dxi, xi0=None,
             beta=None, gamma=None, Q=None,
             theta=None, n0=None, A0=None):
         self.number_of_classes = N0.shape[0]
         self.N0 = N0
-        self.xi0 = xi0
+        if xi0 is None:
+            self.xi0 = dxi
+        else:
+            self.xi0 = xi0
         self.n0 = n0
         self.theta = theta
         # Uniform grid
-        self.xi = xi0 + xi0 * arange(self.number_of_classes)
-        self.delta_xi = xi0
+        self.xi = self.xi0 + dxi * arange(self.number_of_classes)
         self.nu = 2.0  # Binary breakup
         # Kernels setup
         if gamma is not None:
             self.gamma = gamma(self.xi)
-            self.betadv = zeros(
+            self.betadxi = zeros(
                 (self.number_of_classes, self.number_of_classes))
             for i in range(1, len(self.xi)):
                 for j in range(i):
-                    self.betadv[j, i] = beta(self.xi[j], self.xi[i])
-                self.betadv[:, i] = self.betadv[:, i] / sum(self.betadv[:, i])
+                    self.betadxi[j, i] = beta(self.xi[j], self.xi[i])
+                self.betadxi[:, i] =\
+                    self.betadxi[:, i] / sum(self.betadxi[:, i])
 
         else:
             self.gamma = None
-            self.betadv = None
+            self.betadxi = None
 
         if Q is not None:
             self.Q = zeros((self.number_of_classes, self.number_of_classes))
@@ -97,7 +106,7 @@ class MOCSolution:
             self.Q = None
 
         if A0 is not None:
-            self.A0 = A0(self.xi) * xi0
+            self.A0 = A0(self.xi) * dxi
         else:
             self.A0 = None
         # Solve procedure

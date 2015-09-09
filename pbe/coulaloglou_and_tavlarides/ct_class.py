@@ -27,8 +27,8 @@ class CTSolution(MOCSolution):
         self.phi = phi
 
         # Water
-        self.muc = 1e-2  # [P = g * cm^-1 s^-1]
-        self.rhoc = 0.1  # [g/cm3]
+        self.muc = 0.89e-2  # [P = g * cm^-1 s^-1]
+        self.rhoc = 1.0  # [g/cm3]
         # Kerosene-dicholorebenzene
         self.rhod = 0.972  # [g/cm3]
         self.sigma = 42.82
@@ -36,11 +36,13 @@ class CTSolution(MOCSolution):
         time = arange(0.0, 3600, 1)
 
         mm3_to_cm3 = 0.1**3
-        vmax = 0.06 * mm3_to_cm3
+        vmax = 0.38 * mm3_to_cm3
+        #vmax = 0.06 * mm3_to_cm3
 
         # Feed distribution
         self.v0 = v0 * mm3_to_cm3
-        self.sigma0 = 0.005 * mm3_to_cm3
+        self.sigma0 = self.v0 / 5
+        vmin = None  # 5.23e-7
 
         # Feed
         theta = 600
@@ -48,7 +50,7 @@ class CTSolution(MOCSolution):
         self.n0 = self.Vt / theta
         Ninit = zeros(M)
         MOCSolution.__init__(
-            self, Ninit, time, vmax / M,
+            self, Ninit, time, vmax / M, xi0=vmin,
             beta=beta, gamma=self.g, Q=self.Qf,
             theta=theta, n0=self.n0, A0=self.A0)
 
@@ -82,4 +84,3 @@ class CTSolution(MOCSolution):
     @property
     def pbe_phi(self):
         return self.total_volume / self.Vt
-
