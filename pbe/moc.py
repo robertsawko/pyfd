@@ -1,8 +1,6 @@
-from numpy import arange, zeros, pi, array, zeros_like
+from numpy import arange, zeros, pi, zeros_like, dot
 from numpy import sum as nsum
 from scipy.integrate import odeint
-from math import ceil, floor
-import time
 
 """
 Method of classes
@@ -17,43 +15,29 @@ class MOCSolution:
     def RHS(
         self, N, t
     ):
-        tstart = time.clock()
         dNdt = zeros_like(N)
 
         if self.gamma is not None and self.betadxi is not None:
             # Death breakup term
-            for i in arange(1, self.number_of_classes):
-                Nigamma = N[i] * self.gamma[i]
-                dNdt[i] -= Nigamma
-                ind = slice(i)
-                dNdt[ind] += self.nu * self.betadxi[ind, i] * Nigamma
+            dNdt[1:] -= N[1:] * self.gamma[1:]
+            dNdt[:-1] += self.nu * dot(
+                self.betadxi[:-1, 1:], N[1:] * self.gamma[1:])
 
-        tcoal = time.clock()
-        Cd = zeros_like(dNdt)
-        #Cb = zeros(self.number_of_classes)
         if self.Q is not None:
-            for i in arange(self.number_of_classes):
+            Cd = zeros_like(dNdt)
+            for i in arange(self.number_of_classes / 2):
                 ind = slice(i, self.number_of_classes - i - 1)
                 Cb = self.Q[i, ind] * N[i] * N[ind]
-                Cd[i] += nsum(Cb)
+                Cd[i] += sum(Cb)
                 Cd[(i + 1):(i + len(Cb))] += Cb[1:]
+                Cb[0] = 0.5 * Cb[0]
                 dNdt[(2 * i + 1):] += Cb
 
-                ## Birth coalescence term
-                #for j in arange(i):
-                    #dNdt[i] += 0.5 * N[i - j - 1] * N[j] *\
-                        #self.Q[j, i - j - 1]
-                ## Death coalescence term
-                #for j in arange(self.number_of_classes - i - 1):
-                    #dNdt[i] -= N[i] * N[j] * self.Q[i, j]
-
-        dNdt -= 0.5 * Cd
-        #print(dNdt)
+            dNdt -= Cd
         if self.theta is not None:
             dNdt += (self.n0 * self.A0 - N / self.theta)
 
-        tend = time.clock()
-        print("Time = {0:g}, computation time for RHS={1:g}, coalescence={2:g}".format(t, tend - tstart, tend - tcoal))
+        # print('Time = {0:g}'.format(t))
         return dNdt
 
     @property

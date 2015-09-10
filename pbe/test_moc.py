@@ -185,6 +185,6 @@ def test_simultaneous_breakup_and_coalescence():
     error = L2_relative_error(
         pbe_solution.xi,
         pbe_solution.number_density[-1],
-        N0 * blatz_and_tobolsky_pbe_solution(pbe_solution.xi, time[-1], kc, kb)
+        N0 * blatz_and_tobolsky_pbe_solution(pbe_solution.xi, time[-1], 2 * kc, kb)
     )
     assert_almost_equal(error, 0.0, decimal=1)

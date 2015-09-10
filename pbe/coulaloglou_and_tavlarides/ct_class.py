@@ -69,7 +69,7 @@ class CTSolution(MOCSolution):
             exp(- C2 * (1 + self.phi)**2 * self.sigma /
                 (self.rhod * v**(5. / 9) * self.D**(4. / 3) * self.Nstar**2))
 
-    def Qf(self, v1, v2, C3=1.4e-6, C4=1.83e9):
+    def Qf(self, v1, v2, C3=2.8e-6, C4=1.83e9):
         d_ratio = (v1**(1. / 3) * v2**(1. / 3)) / (v1**(1. / 3) + v2**(1. / 3))
 
         return C3 * \

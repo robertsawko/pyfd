@@ -17,20 +17,22 @@ Case setup based on:
     initial IC.
 """
 
-grids = [20, 40, 80]
-time = arange(0.0, 1, 0.001)
+grids = [6]
+time = arange(0.0, 0.002, 0.001)
 vmax = 1e1
 C = 0.1
 N0 = 2
 v0 = 0.5
 
 pbe_solutions = dict()
+
+
+def Ninit(v):
+    return (N0 / v0) * (v / v0) * exp(-v / v0)
+
 for g in grids:
-    dv = vmax / g
-    v = dv + dv * arange(g)
-    Ninit = (N0 / v0) * (v / v0) * exp(-v / v0) * dv
     pbe_solutions[g] = MOCSolution(
-        Ninit, time, dv,
+        g, time, vmax / g, N0=Ninit,
         Q=lambda x, y: C
     )
 
