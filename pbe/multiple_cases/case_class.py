@@ -12,7 +12,7 @@ class CaseSolution(MOCSolution):
             dispProperties,
             contProperties,
             domainProperties,
-            modelParameters=None):
+            model_parameters=None):
         self.dispProperties = dispProperties
         self.contProperties = contProperties
         self.phi = dispProperties['phi']
@@ -42,20 +42,14 @@ class CaseSolution(MOCSolution):
 
         Ninit = zeros(M)
 
-        if modelParameters is None:
-            self.C1 = 0.4
-            self.C2 = 0.08
-            self.C3 = 2.8e-6
-            self.C4 = 1.83e9
+        if model_parameters is None:
+            self.C = [0.4, 0.08, 2.8e-12, 1.83e13]
         else:
-            self.C1 = modelParameters['C1']
-            self.C2 = modelParameters['C2']
-            self.C3 = modelParameters['C3']
-            self.C4 = modelParameters['C4']
+            self.C = model_parameters
 
         MOCSolution.__init__(
             self, Ninit, time, vmax / M,
-            beta=beta, gamma=self.g, Q=self.Q,
+            beta=beta, gamma=self.g, Q=self.Qf,
             theta=theta, n0=self.n0, A0=self.A0)
 
     def A0(self, v):
@@ -64,23 +58,23 @@ class CaseSolution(MOCSolution):
             exp(-(v - self.v0)**2 / (2 * self.sigma0**2))
 
     def g(self, v):
-        C1 = self.C1
-        C2 = self.C2
+        C1 = self.C[0]
+        C2 = self.C[1]
         return \
             C1 * v**(-2. / 9) * self.epsilon**(1. / 3) / (1 + self.phi) * \
             exp(- C2 * (1 + self.phi)**2 * self.sigma /
                 (self.rhod * v**(5. / 9) * self.epsilon**(2. / 3)))
 
-    def Q(self, v1, v2):
-        C3 = self.C3
-        C4 = self.C4
+    def Qf(self, v1, v2):
+        C3 = self.C[2]
+        C4 = self.C[3]
         d_ratio = (v1**(1. / 3) * v2**(1. / 3)) / (v1**(1. / 3) + v2**(1. / 3))
 
         return C3 * \
-            (v1**(1. / 3) + v2**(1. / 3))**2. * \
+            (v1**(2. / 3) + v2**(2. / 3)) * \
             (v1**(2. / 9) + v2**(2. / 9))**0.5 * \
             self.epsilon**(1. / 3) / \
-            ((1 + self.phi) * self.Vt) * \
+            ((1 + self.phi)) * \
             exp(
                 -C4 * self.muc * self.rhoc * self.epsilon /
                 self.sigma**2 /

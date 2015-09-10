@@ -1,4 +1,4 @@
-from numpy import arange, linspace, zeros
+from numpy import arange, linspace, piecewise
 from itertools import cycle
 from moc import MOCSolution
 from test_moc import blatz_and_tobolsky_pbe_solution
@@ -21,21 +21,23 @@ Case setup based on:
     because density function appears twice.
 """
 
-time = arange(0.0, 10, 0.005)
+time = arange(0.0, 20, 0.005)
 # Initial number of monomers
 N0 = 10000
-grids = [20, 40, 80]
+grids = [80]
 kc = 1.0
 kb = 0.25
 vmax = 100
 
 pbe_solutions = dict()
 
+
+def N0Init(x):
+    return piecewise(x, [x < 2, x > 2], [N0, 0])
+
 for g in grids:
-    Ninit = zeros(g)
-    Ninit[0] = N0
     pbe_solutions[g] = MOCSolution(
-        Ninit, time, 1.0,
+        g, time, 1.0, N0=N0Init,
         # Dividing coalescence coefficient by the number of monomers to make
         # formulations equivalent
         Q=lambda x, y: kc / N0,

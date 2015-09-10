@@ -17,6 +17,6 @@ for c in concentrations:
     plt.plot(ct_data[c][:, 0], ct_data[c][:, 1], 's', )
 
 for c in concentrations:
-    plt.plot(Ns * 60, [cts.d32*10 for cts in ct_solutions[c]])
+    plt.plot(Ns * 60, [cts.d32 * 1000 for cts in ct_solutions[c]])
 
 plt.show()
