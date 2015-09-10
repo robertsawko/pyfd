@@ -3,7 +3,6 @@ from numpy import (
 from numpy.testing import assert_almost_equal, assert_array_less
 from moc import MOCSolution
 from scipy.special import gamma
-from numpy import piecewise
 
 
 def check_error_convergence(L2_errors):
@@ -18,12 +17,8 @@ def check_error_convergence(L2_errors):
 def compare_with_analytical_total_number(
     time, grids, pbe_solutions, Na
 ):
-    totals = dict(
-        (
-            n,
-            array([sum(Ns) for Ns in pbe_solutions[n].N])
-        ) for n in pbe_solutions
-    )
+    totals = dict((n, pbe_solutions[n].total_numbers) for n in pbe_solutions)
+
     L2_total_errors = [
         L2_relative_error(time, totals[g], Na)
         for n, g in enumerate(grids)
@@ -109,8 +104,11 @@ def test_pure_binary_breakup():
 
     pbe_solutions = dict()
     for g in grids:
+        threshold = l / g / 2
+
         def N0(x):
-            return piecewise(x, [x < l, x == l], [0, g / l])
+            return piecewise(
+                x, [x < l - threshold, x >= l - threshold], [0, g / l])
         pbe_solutions[g] = MOCSolution(
             g, time, l / g, N0=N0,
             beta=lambda x, y: 1.0 / y,
@@ -134,11 +132,11 @@ def test_pure_coalescence_constant():
     """
     Pure coalescence test
     """
-    t = arange(0.0, 1, 0.01)
+    t = arange(0.0, 10, 0.001)
     vmax = 1.0e1
     v0 = 0.5
     N0 = 2
-    grids = [10, 20, 40, 80, 160]
+    grids = [40, 80, 160]
     C = 0.1
 
     pbe_solutions = dict()
@@ -172,7 +170,7 @@ def test_simultaneous_breakup_and_coalescence():
     N0 = 10000
 
     def N0Init(x):
-        return piecewise(x, [x < 2, x > 2], [N0, 0])
+        return piecewise(x, [x < 1.5, x > 1.5], [N0, 0])
     pbe_solution = MOCSolution(
         grid, time, 1.0, N0=N0Init,
         # Dividing coalescence coefficient by the number of monomers to make
@@ -185,6 +183,6 @@ def test_simultaneous_breakup_and_coalescence():
     error = L2_relative_error(
         pbe_solution.xi,
         pbe_solution.number_density[-1],
-        N0 * blatz_and_tobolsky_pbe_solution(pbe_solution.xi, time[-1], 2 * kc, kb)
+        N0 * blatz_and_tobolsky_pbe_solution(pbe_solution.xi, time[-1], kc, kb)
     )
     assert_almost_equal(error, 0.0, decimal=1)

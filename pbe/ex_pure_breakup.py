@@ -1,9 +1,8 @@
-from numpy import arange, linspace, zeros, array
+from numpy import arange, linspace, array, piecewise
 from itertools import cycle
 from moc import MOCSolution
 from test_moc import ziff_total_number_solution, ziff_pbe_solution
 import matplotlib.pyplot as plt
-import pdb
 
 """
 Case setup based on:
@@ -21,24 +20,22 @@ Case setup based on:
 grids = [10, 20, 40, 80, 160]
 time = arange(0.0, 10.0, 0.001)
 vmax = 1.0
-
 pbe_solutions = dict()
+
 for g in grids:
-    N0 = zeros(g)
-    N0[-1] = 1
+    threshold = vmax / g / 2
+
+    # This is modelling Dirac's delta
+    def N0init(x):
+        return piecewise(
+            x, [x < vmax - threshold, x >= vmax - threshold], [0, g / vmax])
     pbe_solutions[g] = MOCSolution(
-        N0, time, vmax / g,
+        g, time, vmax / g, N0=N0init,
         beta=lambda x, y: 1.0 / y,
         gamma=lambda x: x**2
     )
 
-pdb.set_trace()
-totals = dict(
-    (
-        n,
-        array([sum(Ns) for Ns in pbe_solutions[n].N])
-    ) for n in pbe_solutions
-)
+totals = dict((n, pbe_solutions[n].total_numbers) for n in pbe_solutions)
 
 v = linspace(0, vmax, 100)
 Na = array([ziff_total_number_solution(v, t, vmax) for t in time])
@@ -48,7 +45,7 @@ ax = fig.gca()
 linestyles = cycle(['-', '--', ':'])
 for n in sorted(totals):
     ax.loglog(
-        time, totals[n]/totals[n][0],
+        time, totals[n] / totals[n][0],
         linestyle=next(linestyles),
         label="MOC with N={0}".format(n))
 ax.loglog(time, Na, "-k", linewidth=2, label="Analytical")

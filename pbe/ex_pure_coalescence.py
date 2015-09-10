@@ -17,9 +17,9 @@ Case setup based on:
     initial IC.
 """
 
-grids = [6]
-time = arange(0.0, 0.002, 0.001)
-vmax = 1e1
+grids = [20, 40, 80, 160]
+time = arange(0.0, 10, 0.001)
+vmax = 2e1
 C = 0.1
 N0 = 2
 v0 = 0.5
@@ -36,12 +36,7 @@ for g in grids:
         Q=lambda x, y: C
     )
 
-totals = dict(
-    (
-        n,
-        array([sum(Ns) for Ns in pbe_solutions[n].N])
-    ) for n in pbe_solutions
-)
+totals = dict((n, pbe_solutions[n].total_numbers) for n in pbe_solutions)
 
 v = linspace(0, vmax, 100)
 Na = scott_total_number_solution3(time, C=C, N0=N0)

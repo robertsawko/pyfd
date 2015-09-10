@@ -1,6 +1,6 @@
-from numpy import arange, zeros, pi, zeros_like, dot
+from numpy import arange, zeros, pi, zeros_like, dot, array
 from numpy import sum as nsum
-from scipy.integrate import odeint
+from scipy.integrate import odeint, quad
 
 """
 Method of classes
@@ -78,7 +78,9 @@ class MOCSolution:
         if N0 is None:
             N0 = zeros_like(self.xi)
         else:
-            N0 = N0(self.xi) * dxi
+            N0 = array([
+                quad(N0, self.xi[i] - dxi / 2., self.xi[i] + dxi / 2.)[0]
+                for i in range(number_of_classes)])
 
         self.nu = 2.0  # Binary breakup
         # Kernels setup
@@ -104,9 +106,11 @@ class MOCSolution:
         else:
             self.Q = None
 
-        if A0 is not None:
-            self.A0 = A0(self.xi) * dxi
-        else:
+        if A0 is None:
             self.A0 = None
+        else:
+            self.A0 = array([
+                quad(A0, self.xi[i] - dxi / 2., self.xi[i] + dxi / 2.)[0]
+                for i in range(number_of_classes)])
         # Solve procedure
         self.N = odeint(lambda NN, t: self.RHS(NN, t), N0, t)
