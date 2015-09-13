@@ -28,7 +28,7 @@ class MOCSolution:
             for i in arange(self.number_of_classes / 2):
                 ind = slice(i, self.number_of_classes - i - 1)
                 Cb = self.Q[i, ind] * N[i] * N[ind]
-                Cd[i] += sum(Cb)
+                Cd[i] += nsum(Cb)
                 Cd[(i + 1):(i + len(Cb))] += Cb[1:]
                 Cb[0] = 0.5 * Cb[0]
                 dNdt[(2 * i + 1):] += Cb
@@ -92,7 +92,7 @@ class MOCSolution:
                 for j in range(i):
                     self.betadxi[j, i] = beta(self.xi[j], self.xi[i])
                 self.betadxi[:, i] =\
-                    self.betadxi[:, i] / sum(self.betadxi[:, i])
+                    self.betadxi[:, i] / nsum(self.betadxi[:, i])
 
         else:
             self.gamma = None

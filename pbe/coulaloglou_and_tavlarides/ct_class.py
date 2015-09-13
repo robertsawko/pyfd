@@ -21,7 +21,7 @@ class CTSolution(MOCSolution):
             M=10,
             Nstar=4.16,  # [rps] impeller revolutions
             phi=0.15,  # [1] holdup
-            v0=0.05):
+            vmax=0.08):
         self.D = 10  # [cm] impeller diameter
         self.Nstar = Nstar
         self.phi = phi
@@ -36,19 +36,18 @@ class CTSolution(MOCSolution):
         time = arange(0.0, 3600, 0.5)
 
         mm3_to_cm3 = 0.1**3
-        vmax = 0.38 * mm3_to_cm3
-        #vmax = 0.06 * mm3_to_cm3
+        vmax = vmax * mm3_to_cm3
+        # vmax = 0.06 * mm3_to_cm3
 
         # Feed distribution
-        self.v0 = v0 * mm3_to_cm3
-        self.sigma0 = self.v0 / 5
+        self.v0 = vmax / 2
+        self.sigma0 = (vmax - self.v0) / 3.3
         vmin = None  # 5.23e-7
 
         # Feed
         theta = 600
         self.Vt = 12 * 10**3
         self.n0 = self.Vt / theta
-        Ninit = zeros(M)
         MOCSolution.__init__(
             self, M, time, vmax / M, N0=self.N0, xi0=vmin,
             beta=beta, gamma=self.g, Q=self.Qf,
