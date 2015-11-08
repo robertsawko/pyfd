@@ -1,6 +1,6 @@
 from numpy import genfromtxt, linspace
 import pickle
-from aux import set_plt_params, plt
+from pyfd.aux import set_plt_params, plt
 import itertools
 
 """
@@ -39,11 +39,11 @@ for c in concentrations:
         label=r'Num. $\phi={0:0.2f}$'.format(c / 100.))
     plt.plot(
         Ns * 60, [cts.d32 * 1000 for cts in ct_solutions_g[c]],
-        label=r'Num. $\phi={0:0.2f}$'.format(c / 100.))
+        label=r'Num. gen., $\phi={0:0.2f}$'.format(c / 100.))
 
 handles, labels = ax.get_legend_handles_labels()
 first_legend = plt.legend(handles[3:], labels[3:], loc='upper right')
 ax = plt.gca().add_artist(first_legend)
 plt.legend(handles[:3], labels[:3], loc='lower left')
 fig.patch.set_alpha(0)
-plt.savefig("ct-fig3.pdf", bbox_inches='tight')
+plt.savefig("figs/ct-fig3.pdf", bbox_inches='tight')
