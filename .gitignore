@@ -1,6 +1,9 @@
 *.pyc
 *.swp
 *.swo
+*.pdf
+*.pgf
+*.pickle
 pbe/validationData/orifice/results/histograms/*
 pbe/validationData/orifice/results/*.pdf
 pbe/validationData/sweep/**
