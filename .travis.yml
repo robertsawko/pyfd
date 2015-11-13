@@ -18,4 +18,4 @@ install:
   - conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy matplotlib nose dateutil pandas statsmodels
 
 # Run test
-script: nosetests -v pbe/
+script: nosetests -v pyfd/tests
