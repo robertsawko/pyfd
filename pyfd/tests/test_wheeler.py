@@ -1,5 +1,5 @@
 import numpy as np
-from qmom import wheeler_inversion
+from pyfd.pbe.qmom import wheeler_inversion
 from numpy.testing import assert_almost_equal
 
 """

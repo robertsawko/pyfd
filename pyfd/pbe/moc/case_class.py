@@ -1,12 +1,12 @@
 from moc import MOCSolution
-from numpy import arange, sqrt, exp, pi, zeros
+from numpy import arange, sqrt, exp, pi
 
 
 def beta(v1, v2):
     return 2.4 / v2 * exp(-4.5 * (2 * v1 - v2)**2 / (v2**2))
 
 
-"""
+'''
 input:
     dispProperties:
         description: is a dictionary with properties of the dispersed phase
@@ -40,7 +40,7 @@ input:
 
     time:
         description: discretized time domain
-"""
+'''
 
 
 class CaseSolution(MOCSolution):
@@ -77,17 +77,11 @@ class CaseSolution(MOCSolution):
         else:
             self.n0 = self.Vt / theta
 
-        Ninit = zeros(M)
-
         if model_parameters is None:
             self.C = [0.4, 0.08, 2.8, 1.83e13]
         else:
             self.C = model_parameters
 
-        #MOCSolution.__init__(
-            #self, Ninit, time, vmax / M,
-            #beta=beta, gamma=self.g, Q=self.Qf,
-            #theta=theta, n0=self.n0, A0=self.A0)
         MOCSolution.__init__(
             self, M, time, vmax / M,
             beta=beta, gamma=self.g, Q=self.Qf,
