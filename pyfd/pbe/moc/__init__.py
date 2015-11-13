@@ -1,1 +1,1 @@
-from pbe.moc import MOCSolution
+from pyfd.pbe.moc.moc import MOCSolution
