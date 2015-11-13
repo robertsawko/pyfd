@@ -1,7 +1,7 @@
 from numpy import arange, linspace, array, piecewise
 from itertools import cycle
 from pyfd.pbe.moc import MOCSolution
-from pyfd.tests.moc import ziff_total_number_solution, ziff_pbe_solution
+from pyfd.tests.test_moc import ziff_total_number_solution, ziff_pbe_solution
 import matplotlib.pyplot as plt
 
 """
