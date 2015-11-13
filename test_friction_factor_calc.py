@@ -1,5 +1,5 @@
-from friction_factor_calc import (
-    friction_factor, reynolds_number, pressure_drop)
+from friction_factor_calc import friction_factor, reynolds_number
+from friction_factor_calc import pressure_drop
 from numpy.testing import assert_approx_equal
 
 
