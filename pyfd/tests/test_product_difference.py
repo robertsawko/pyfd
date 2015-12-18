@@ -1,5 +1,5 @@
 import numpy as np
-from qmom import product_difference_inversion
+from pyfd.pbe.qmom import product_difference_inversion
 from numpy.testing import assert_almost_equal
 
 

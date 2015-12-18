@@ -1,16 +1,15 @@
 import numpy as np
-from qmom import is_realizable
+from pyfd.pbe.qmom import is_realizable
 from numpy.testing import assert_equal
 
-"""
+'''
 Unit tests for realizability
 
 Based on example 3.3
 
 Daniele L. Marchisio, Rodney O. Fox "Computational Models for Polydisperse
 Particulate and Multiphase Systems", Cambridge University Press 2013
-
-"""
+'''
 
 
 def test_book_ex3_3():

@@ -1,7 +1,7 @@
 from numpy import arange, linspace, piecewise
 from itertools import cycle
-from moc import MOCSolution
-from test_moc import blatz_and_tobolsky_pbe_solution
+from pyfd.pbe.moc import MOCSolution
+from pyfd.tests.test_moc import blatz_and_tobolsky_pbe_solution
 import matplotlib.pyplot as plt
 
 """

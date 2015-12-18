@@ -1,6 +1,6 @@
 from numpy import genfromtxt, linspace
 import pickle
-from aux import set_plt_params, plt
+from pyfd.aux import set_plt_params, plt
 import itertools
 
 """
@@ -9,13 +9,15 @@ This script plot figure 3 from CT publication.
 
 with open('ct_solutions.pickle', 'rb') as f:
     ct_solutions = pickle.load(f)
+#with open('pyfd/data/ct_solutions_generalized.pickle', 'rb') as f:
+    #ct_solutions_g = pickle.load(f)
 
-concentrations = [5, 10, 15]
+concentrations = [5] #, 10, 15]
 Ns = linspace(3, 6, 10)  # rps
 
 ct_data = dict([(
     c, genfromtxt(
-        '../kernel_identification/validationData/coulaloglou/d32_N_alpha{0}.txt'.format(c)))
+        './pyfd/data/pbe/coulaloglou/d32_N_alpha{0}.txt'.format(c)))
     for c in concentrations])
 
 set_plt_params(relative_fig_width=0.8)
@@ -35,10 +37,13 @@ for c in concentrations:
     plt.plot(
         Ns * 60, [cts.d32 * 10 for cts in ct_solutions[c]],
         label=r'Num. $\phi={0:0.2f}$'.format(c / 100.))
+    #plt.plot(
+        #Ns * 60, [cts.d32 * 1000 for cts in ct_solutions_g[c]],
+        #label=r'Num. gen., $\phi={0:0.2f}$'.format(c / 100.))
 
 handles, labels = ax.get_legend_handles_labels()
 first_legend = plt.legend(handles[3:], labels[3:], loc='upper right')
 ax = plt.gca().add_artist(first_legend)
 plt.legend(handles[:3], labels[:3], loc='lower left')
 fig.patch.set_alpha(0)
-plt.savefig("ct-fig3.pgf", bbox_inches='tight')
+plt.savefig("ct-fig3.pdf", bbox_inches='tight')

@@ -29,7 +29,7 @@ class MOCSolution:
                 ind = slice(i, self.number_of_classes - i - 1)
                 Cb = self.Q[i, ind] * N[i] * N[ind]
                 Cd[i] += nsum(Cb)
-                Cd[(i + 1):(i + len(Cb))] += Cb[1:]
+                Cd[(i + 1):(self.number_of_classes - i - 1)] += Cb[1:]
                 Cb[0] = 0.5 * Cb[0]
                 dNdt[(2 * i + 1):] += Cb
 

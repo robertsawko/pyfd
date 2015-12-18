@@ -1,7 +1,6 @@
-from numpy import (
-        exp, trapz, piecewise, arange, linspace, sqrt, zeros, sinh, array)
+from numpy import exp, trapz, piecewise, arange, linspace, sqrt, zeros, array
 from numpy.testing import assert_almost_equal, assert_array_less
-from moc import MOCSolution
+from pyfd.pbe.moc import MOCSolution
 from scipy.special import gamma
 
 

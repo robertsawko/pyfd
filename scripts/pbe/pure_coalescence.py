@@ -1,7 +1,8 @@
-from numpy import arange, linspace, array, exp
+from numpy import arange, linspace, exp
 from itertools import cycle
-from moc import MOCSolution
-from test_moc import scott_total_number_solution3, scott_pbe_solution3
+from pyfd.pbe.moc import MOCSolution
+from pyfd.tests.test_moc import scott_total_number_solution3
+from pyfd.tests.test_moc import scott_pbe_solution3
 import matplotlib.pyplot as plt
 
 """
