@@ -1,4 +1,4 @@
-from moc import MOCSolution
+from .moc import MOCSolution
 from numpy import arange, sqrt, exp, pi
 
 
@@ -50,8 +50,8 @@ class CaseSolution(MOCSolution):
             contProperties,
             domainProperties,
             model_parameters=None,
-            time=arange(0.0, 3600, 0.5)
-            ):
+            time=arange(0.0, 3600, 0.5)):
+
         self.dispProperties = dispProperties
         self.contProperties = contProperties
         self.phi = dispProperties['phi']

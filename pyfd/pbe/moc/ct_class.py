@@ -1,5 +1,4 @@
-from case_class import CaseSolution
-from numpy import zeros
+from .case_class import CaseSolution
 
 
 class CTSolution(CaseSolution):
