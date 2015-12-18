@@ -1,4 +1,4 @@
-from .case_class import CaseSolution
+from .case_class import CaseSolution, DomainProperties
 
 
 class CTSolution(CaseSolution):
@@ -13,7 +13,6 @@ class CTSolution(CaseSolution):
 
         contProperties = dict()
         dispProperties = dict()
-        domainProperties = dict()
 
         # Water
         contProperties['mu'] = 0.89e-3  # [P = kg * m^-1 s^-1]
@@ -32,9 +31,7 @@ class CTSolution(CaseSolution):
         dispProperties['sigma0'] = v0 / 10
 
         # Feed
-        domainProperties['theta'] = 600.
-        domainProperties['V'] = 12e-3
-        domainProperties['M'] = M
+        domain = DomainProperties(theta=600, V=12e-3, M=M)
         CaseSolution.__init__(
-            self, dispProperties, contProperties, domainProperties,
+            self, dispProperties, contProperties, domain,
             model_parameters=model_parameters)

@@ -1,5 +1,5 @@
 from .moc import MOCSolution
-from numpy import arange, sqrt, exp, pi, zeros
+from numpy import arange, sqrt, exp, pi
 
 """
 Case setup based on:
@@ -42,7 +42,6 @@ class CTSolution(MOCSolution):
         # Feed distribution
         self.v0 = vmax / 2
         self.sigma0 = (vmax - self.v0) / 3.3
-        print(self.sigma0)
         vmin = None  # 5.23e-7
 
         # Feed

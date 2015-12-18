@@ -1,5 +1,5 @@
-from case_class import CaseSolution
-from numpy import zeros, pi
+from case_class import CaseSolution, DomainProperties
+from numpy import pi
 
 
 class SASolution(CaseSolution):
@@ -18,7 +18,6 @@ class SASolution(CaseSolution):
 
         contProperties = dict()
         dispProperties = dict()
-        domainProperties = dict()
 
         # oil
         contProperties['mu'] = 1.8e-3  # [P = kg * m^-1 s^-1]
@@ -30,7 +29,7 @@ class SASolution(CaseSolution):
         u_rms = U * I
         k = 3. / 2. * u_rms ** 2
         L_t = 0.038 * self.D
-        contProperties['epsilon'] = 0.09 * k ** (3./2.) / L_t
+        contProperties['epsilon'] = 0.09 * k ** (3. / 2.) / L_t
         contProperties['Re'] = Re
         # water solution
         dispProperties['sigma'] = 1.e-2  # [P = kg * m^-1 s^-1]
@@ -44,10 +43,9 @@ class SASolution(CaseSolution):
         dispProperties['sigma0'] = v0 / 10
 
         # Feed
-        domainProperties['theta'] = theta
-        domainProperties['V'] = pi * self.L * (self.D / 2) ** 2
-        domainProperties['M'] = M
+        domain = DomainProperties(
+            theta=theta, V=pi * self.L * (self.D / 2) ** 2, M=M)
 
         CaseSolution.__init__(
-            self, dispProperties, contProperties, domainProperties,
+            self, dispProperties, contProperties, domain,
             model_parameters=model_parameters)

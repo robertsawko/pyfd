@@ -2,6 +2,13 @@ from .moc import MOCSolution
 from numpy import arange, sqrt, exp, pi
 
 
+class DomainProperties:
+    def __init__(self, theta, V, M):
+        self.theta = theta
+        self.V = V
+        self.M = M
+
+
 def beta(v1, v2):
     return 2.4 / v2 * exp(-4.5 * (2 * v1 - v2)**2 / (v2**2))
 
@@ -48,7 +55,7 @@ class CaseSolution(MOCSolution):
             self,
             dispProperties,
             contProperties,
-            domainProperties,
+            domain,
             model_parameters=None,
             time=arange(0.0, 3600, 0.5)):
 
@@ -69,9 +76,9 @@ class CaseSolution(MOCSolution):
         self.sigma0 = dispProperties['sigma0']
 
         # Feed
-        theta = domainProperties['theta']
-        M = domainProperties['M']
-        self.Vt = domainProperties['V']
+        theta = domain.theta
+        M = domain.M
+        self.Vt = domain.Vt
         if theta is None:
             self.n0 = None
         else:
