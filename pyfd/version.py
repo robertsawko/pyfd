@@ -5,7 +5,7 @@ _version_major = 0
 _version_minor = 1
 _version_micro = ''  # use '' for first of series, number for 1 and above
 _version_extra = 'dev'
-#_version_extra = ''  # Uncomment this for full releases
+# _version_extra = ''  # Uncomment this for full releases
 
 # Construct full version string from these.
 _ver = [_version_major, _version_minor]
@@ -25,25 +25,25 @@ CLASSIFIERS = ["Development Status :: 3 - Alpha",
                "Topic :: Scientific/Engineering"]
 
 # Description should be a one-liner:
-description = "shablona: family of support scripts for CFD"
+description = "pyfd: family of support scripts for fluid dynamics"
 # Long description will go up on the pypi page
 long_description = """
 
-Shablona
+pyfd
 ========
 
 """
 
 NAME = "pyfd"
 MAINTAINER = "Robert Sawko, Marcin Traczyk"
-MAINTAINER_EMAIL = "r.sawko@cranfield.ac.uk"
+MAINTAINER_EMAIL = "robertsawko@gmail.com"
 DESCRIPTION = description
 LONG_DESCRIPTION = long_description
 URL = ""
 DOWNLOAD_URL = ""
 LICENSE = ""
 AUTHOR = "Robert Sawko, Marcin Traczyk"
-AUTHOR_EMAIL = "r.sawko@cranfield.ac.uk"
+AUTHOR_EMAIL = "robertsawko@gmail.com"
 PLATFORMS = "OS Independent"
 MAJOR = _version_major
 MINOR = _version_minor
