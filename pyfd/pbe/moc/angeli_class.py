@@ -1,4 +1,4 @@
-from case_class import CaseSolution, DomainProperties
+from case_class import CaseSolution, DomainProperties, DispersionProperties
 from numpy import pi
 
 
@@ -17,7 +17,6 @@ class AngeliSolution(CaseSolution):
         self.L = 9.5
 
         contProperties = dict()
-        dispProperties = dict()
 
         # oil
         contProperties['mu'] = 1.6e-3  # [P = kg * m^-1 s^-1]
@@ -32,20 +31,19 @@ class AngeliSolution(CaseSolution):
         contProperties['epsilon'] = 0.09 * k ** (3. / 2.) / L_t
         contProperties['Re'] = Re
         # water solution
-        dispProperties['sigma'] = 1.7e-2  # [P = kg * m^-1 s^-1]
-        dispProperties['rho'] = 1000.  # [kg/m3]
-        dispProperties['phi'] = phi
-
-        dispProperties['vMax'] = v0 * 3.
+        dispersion = DispersionProperties(
+            phi=phi, rho=1000.,  # [kg/m3]
+            sigma=1.7e-2,  # [P = kg * m^-1 s^-1]
+            v_max=v0 * 3,
+            v0=v0,
+            sigma0=v0 / 10)
 
         # Feed distribution
-        dispProperties['v0'] = v0
-        dispProperties['sigma0'] = v0 / 10
 
         # Feed
         domain = DomainProperties(
             theta=theta, V=pi * self.L * (self.D / 2) ** 2, M=M)
 
         CaseSolution.__init__(
-            self, dispProperties, contProperties, domain,
+            self, dispersion, contProperties, domain,
             model_parameters=model_parameters)

@@ -1,4 +1,4 @@
-from .case_class import CaseSolution, DomainProperties
+from .case_class import CaseSolution, DomainProperties, DispersionProperties
 
 
 class CTSolution(CaseSolution):
@@ -12,7 +12,6 @@ class CTSolution(CaseSolution):
         self.D = 0.10  # [m] impeller diameter
 
         contProperties = dict()
-        dispProperties = dict()
 
         # Water
         contProperties['mu'] = 0.89e-3  # [P = kg * m^-1 s^-1]
@@ -20,18 +19,16 @@ class CTSolution(CaseSolution):
         # contProperties['epsilon'] = 0.407 * Nstar**3 * self.D**2
         contProperties['epsilon'] = Nstar**3 * self.D**2
         # Kerosene-dicholorebenzene
-        dispProperties['sigma'] = 42.82e-3  # [P = kg * m^-1 s^-1]
-        dispProperties['rho'] = 972.  # [kg/m3]
-        dispProperties['phi'] = phi
 
-        dispProperties['vMax'] = 6e-11
+        dispersion = DispersionProperties(
+            phi=phi, rho=972.,  # [kg/m3]
+            sigma=42.82e-3,  # [P = kg * m^-1 s^-1]
+            v_max=6e-11,
+            v0=v0,
+            sigma0=v0 / 10.)
 
-        # Feed distribution
-        dispProperties['v0'] = v0
-        dispProperties['sigma0'] = v0 / 10
-
-        # Feed
         domain = DomainProperties(theta=600, V=12e-3, M=M)
+
         CaseSolution.__init__(
-            self, dispProperties, contProperties, domain,
+            self, dispersion, contProperties, domain,
             model_parameters=model_parameters)

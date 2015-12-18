@@ -1,4 +1,4 @@
-from case_class import CaseSolution, DomainProperties
+from case_class import CaseSolution, DomainProperties, DispersionProperties
 from numpy import pi
 
 
@@ -17,7 +17,6 @@ class SASolution(CaseSolution):
         self.L = 4.5    # [m] impeller diameter
 
         contProperties = dict()
-        dispProperties = dict()
 
         # oil
         contProperties['mu'] = 1.8e-3  # [P = kg * m^-1 s^-1]
@@ -32,20 +31,16 @@ class SASolution(CaseSolution):
         contProperties['epsilon'] = 0.09 * k ** (3. / 2.) / L_t
         contProperties['Re'] = Re
         # water solution
-        dispProperties['sigma'] = 1.e-2  # [P = kg * m^-1 s^-1]
-        dispProperties['rho'] = 1166.  # [kg/m3]
-        dispProperties['phi'] = phi
+        dispersion = DispersionProperties(
+            phi=phi, rho=1166.,  # [kg/m3]
+            sigma=1.e-2,  # [P = kg * m^-1 s^-1]
+            v_max=6e-11,
+            v0=v0,
+            sigma0=v0 / 10)
 
-        dispProperties['vMax'] = 6e-11
-
-        # Feed distribution
-        dispProperties['v0'] = v0
-        dispProperties['sigma0'] = v0 / 10
-
-        # Feed
         domain = DomainProperties(
             theta=theta, V=pi * self.L * (self.D / 2) ** 2, M=M)
 
         CaseSolution.__init__(
-            self, dispProperties, contProperties, domain,
+            self, dispersion, contProperties, domain,
             model_parameters=model_parameters)

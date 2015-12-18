@@ -9,15 +9,25 @@ class DomainProperties:
         self.M = M
 
 
+class DispersionProperties:
+    def __init__(self, phi, rho, sigma, v_max, v0, sigma0):
+        self.phi = phi
+        self.rho = rho
+        self.sigma = sigma
+        self.v_max = v_max
+        self.v0 = v0
+        self.sigma0 = sigma0
+
+
 def beta(v1, v2):
     return 2.4 / v2 * exp(-4.5 * (2 * v1 - v2)**2 / (v2**2))
 
 
 '''
 input:
-    dispProperties:
+    dispersion:
         description: is a dictionary with properties of the dispersed phase
-        dispProperties = dict()
+        dispersion = dict()
         Required fields:
         phi         volume fraction
         rho         density
@@ -53,31 +63,30 @@ input:
 class CaseSolution(MOCSolution):
     def __init__(
             self,
-            dispProperties,
+            dispersion,
             contProperties,
             domain,
             model_parameters=None,
             time=arange(0.0, 3600, 0.5)):
 
-        self.dispProperties = dispProperties
         self.contProperties = contProperties
-        self.phi = dispProperties['phi']
+        self.phi = dispersion.phi
 
         self.muc = contProperties['mu']
         self.rhoc = contProperties['rho']
         self.epsilon = contProperties['epsilon']
-        self.rhod = dispProperties['rho']
-        self.sigma = dispProperties['sigma']
+        self.rhod = dispersion.rho
+        self.sigma = dispersion.sigma
 
-        vmax = dispProperties['vMax']
+        vmax = dispersion.v_max
 
         # Feed distribution
-        self.v0 = dispProperties['v0']
-        self.sigma0 = dispProperties['sigma0']
+        self.v0 = dispersion.v0
+        self.sigma0 = dispersion.sigma0
 
         # Feed
         theta = domain.theta
-        M = domain.M
+        M = domain.M  # TODO: Fix variable name, what is M?
         self.Vt = domain.Vt
         if theta is None:
             self.n0 = None
