@@ -1,4 +1,4 @@
-from pyfd.pbe.moc.ct import CTSolution
+from pyfd.pbe.moc import CTSolution
 from numpy import linspace
 import pickle
 
@@ -9,8 +9,8 @@ figure 3 from CT publication.
 concentrations = [5]  # , 10, 15]
 Ns = linspace(3, 6, 10)  # rps
 ct_solutions = dict([(
-    c, [CTSolution(M=50, Nstar=N, phi=c / 100.0) for N in Ns])
+    c, [CTSolution(M=200, Nstar=N, phi=c / 100.0) for N in Ns])
     for c in concentrations])
 
-with open('data/ct_solutions.pickle', 'wb') as f:
+with open('ct_solutions.pickle', 'wb') as f:
     pickle.dump(ct_solutions, f)
