@@ -3,10 +3,12 @@
 [![Join the chat at https://gitter.im/robertsawko/pyfd](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/robertsawko/pyfd?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)  
 [![Build Status](https://travis-ci.org/robertsawko/pyfd.svg?branch=master)](https://travis-ci.org/robertsawko/pyfd)
 
-There's a number of calculations I often perform prior to a CFD calculation such as 
+This is a collection of Python modules for routine CFD calculation but also as
+a sandbox for more complicated calculations.
  * Colebrook-White friction factor check with single phase pipe
- * Calculation of turbulence intensities for BC specification
- * Wheeler moment inversion algorithm
+ * Calculation of turbulence intensities for inlet BC specification
+ * Wheeler and PD moment inversion algorithms
+ * Method of classes method
 
 ## General
 
