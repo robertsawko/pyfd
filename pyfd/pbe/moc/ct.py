@@ -31,11 +31,11 @@ class CTSolution(MOCSolution):
         self.rhoc = 1.0  # [g/cm3]
         # Kerosene-dicholorebenzene
         self.rhod = 0.972  # [g/cm3]
-        self.sigma = 42.82
+        self.sigma = 42.82  # Unit?
 
         time = arange(0.0, 3600, 0.5)
 
-        mm3_to_cm3 = 0.1**3
+        mm3_to_cm3 = 0.1**3  # TODO: Fix that scaling
         vmax = vmax * mm3_to_cm3
         # vmax = 0.06 * mm3_to_cm3
 
@@ -68,7 +68,7 @@ class CTSolution(MOCSolution):
             exp(- C2 * (1 + self.phi)**2 * self.sigma /
                 (self.rhod * v**(5. / 9) * self.D**(4. / 3) * self.Nstar**2))
 
-    def Qf(self, v1, v2, C3=5.6e-6, C4=1.83e9):
+    def Qf(self, v1, v2, C3=2.8e-6, C4=1.83e9):
         d_ratio = (v1**(1. / 3) * v2**(1. / 3)) / (v1**(1. / 3) + v2**(1. / 3))
 
         return C3 * \
